@@ -227,7 +227,7 @@ return [
     'menu' => [                        
         [
             'text'        => 'Clientes',
-            'url'         => 'admin/pages',
+            'url'         => 'customers',
             'icon'        => 'far fa-fw fa-user',            
         ],
         [
