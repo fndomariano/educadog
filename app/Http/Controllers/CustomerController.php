@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Http\Requests\CustomerRequest;
+use DB;
 use Illuminate\Http\Request;
 
 class CustomerController extends Controller
@@ -32,7 +34,7 @@ class CustomerController extends Controller
      */
     public function create()
     {
-        //
+        return view('customer.create');
     }
 
     /**
@@ -41,9 +43,32 @@ class CustomerController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CustomerRequest $request)
     {
-        //
+        DB::beginTransaction();
+
+        try {
+
+            $customer = new Customer;
+            $customer->name   = $request->name;
+            $customer->email  = $request->email;
+            $customer->phone  = $request->phone;
+            $customer->save();
+            
+            DB::commit();
+
+            return redirect()
+                ->route('customer_index')
+                ->with('success', 'Cliente cadastrado com sucesso!');
+
+        } catch (Exception $e) {
+            
+            DB::rollback();
+            
+            return redirect()
+                ->route('customer_index')
+                ->with('error', 'Ocorreu um erro ao salvar o cliente!');
+        }
     }
 
     /**

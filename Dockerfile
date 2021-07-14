@@ -13,7 +13,11 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     zip \
-    unzip
+    unzip 
+    
+# Node
+ENV PATH="/opt/node-v16.4.2-linux-x64/bin:${PATH}"
+RUN curl https://nodejs.org/dist/v16.4.2/node-v16.4.2-linux-x64.tar.gz |tar xzf - -C /opt/ 
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
