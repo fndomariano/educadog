@@ -9,11 +9,12 @@ use Illuminate\Http\Request;
 
 class CustomerController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+	}
+
     public function index(Request $request)
     {
         $term = $request->term;
@@ -27,22 +28,11 @@ class CustomerController extends Controller
     	return view('customer.index', compact('customers'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         return view('customer.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(CustomerRequest $request)
     {
         DB::beginTransaction();
@@ -71,48 +61,81 @@ class CustomerController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
-        //
+        $customer = Customer::find($id);
+
+    	if (!$customer) {
+			abort(404);
+		}
+
+    	return view('customer.show', compact('customer'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
-        //
+        $customer = Customer::find($id);
+
+        if (!$customer) {
+            abort(404);
+        }
+
+        return view('customer.edit', compact('customer'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+    public function update(CustomerRequest $request, $id)
     {
-        //
+        try {
+
+            $customer = Customer::find($id);
+            $customer->name   = $request->name;
+            $customer->email  = $request->email;
+            $customer->phone  = $request->phone;
+            $customer->save();
+            
+            DB::commit();
+
+            return redirect()
+                ->route('customer_index')
+                ->with('success', 'Cliente editado com sucesso!');
+
+        } catch (Exception $e) {
+            
+            DB::rollback();
+            
+            return redirect()
+                ->route('customer_index')
+                ->with('error', 'Ocorreu um erro ao editar o cliente!');
+        }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
-        //
+        $customer = Customer::find($id);
+
+        if (!$customer) {
+            abort(404);
+        }
+
+        DB::beginTransaction();
+            
+        try {
+                                
+            $customer->delete();
+            
+            DB::commit();
+
+            return redirect()
+                ->route('customer_index')
+                ->with('success', 'Cliente removido com sucesso!'); 
+            
+        } catch(Exception $e) {
+            
+            DB::rollback();
+
+            return redirect()
+                ->route('customer_index')
+                ->with('error', 'Ocorreu um ao tentar excluir o cliente!'); 
+        }
     }
 }

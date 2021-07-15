@@ -1842,6 +1842,15 @@ module.exports = {
 
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
+$('.delete').on('click', function (e) {
+  $('#confirm').modal();
+  formClass = $(this).attr('class').split(' ').pop();
+  form = $('.' + formClass);
+  $('#btn-delete-yes').on('click', function () {
+    form.submit();
+  });
+});
+
 /***/ }),
 
 /***/ "./resources/js/bootstrap.js":
