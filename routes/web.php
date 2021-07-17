@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\PetController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,3 +30,12 @@ Route::post('/customer/store', [CustomerController::class, 'store'])->name('cust
 Route::get('/customer/{id}/edit', [CustomerController::class, 'edit'])->name('customer_edit');
 Route::put('/customer/{id}/update', [CustomerController::class, 'update'])->name('customer_update');
 Route::delete('/customer/{id}/destroy', [CustomerController::class, 'destroy'])->name('customer_delete');
+
+
+Route::get('pets', [PetController::class, 'index'])->name('pet_index');
+Route::get('pet/{id}/show', [PetController::class, 'show'])->name('pet_show');
+Route::get('pet/create', [PetController::class, 'create'])->name('pet_create');
+Route::post('pet/store', [PetController::class, 'store'])->name('pet_store');
+Route::get('pet/{id}/edit', [PetController::class, 'edit'])->name('pet_edit');
+Route::put('pet/{id}/update', [PetController::class, 'update'])->name('pet_update');
+Route::delete('pet/{id}/destroy', [PetController::class, 'destroy'])->name('pet_delete');

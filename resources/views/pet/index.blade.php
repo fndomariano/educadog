@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Clientes')
+@section('title', 'Pets')
 
 @section('content_header')
 	
@@ -8,10 +8,10 @@
 
     <div class="row">    	
     	<div class="col-md-6">
-    		<h1>Clientes</h1>
+    		<h1>Pets</h1>
     	</div>
 		<div class="col-md-6">
-			<form method="get" action="{{ route('customer_index') }}">		    
+			<form method="get" action="{{ route('pet_index') }}">		    
 				<div class="input-group float-right" style="width: 250px;">
 			    	<input type="text" name="term" class="form-control" placeholder="Buscar">
 			        <div class="input-group-append">
@@ -30,7 +30,7 @@
         <div class="card-header">
             <div class="card-tools">
                 <div class="col-md-6">
-                    <a href="{{ route('customer_create') }}">
+                    <a href="{{ route('pet_create') }}">
                         <i class="fas fa-plus"></i>
                     </a>		    
                 </div>
@@ -43,29 +43,31 @@
                     <tr>
                         <th>Código</th>
                         <th>Nome</th>
-                        <th>E-mail</th>
-                        <th>Telefone</th>				
+                        <th>Cliente</th>
+                        <th>Raça</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @if (count($customers) > 0)
-                        @foreach ($customers as $customer)
+                    @if (count($pets) > 0)
+                        @foreach ($pets as $pet)
                             <tr>
-                                <td>{{ $customer->id }}</td>
+                                <td>{{ $pet->id }}</td>
                                 <td>
-                                    <a href="{{ route('customer_show', $customer->id) }}">{{ $customer->name }}</a>
+                                    <a href="{{ route('pet_show', $pet->id) }}">{{ $pet->name }}</a>
                                 </td>
-                                <td>{{ $customer->email }}</td>
-                                <td>{{ $customer->phone }}</td>						
                                 <td>
-                                    <a href="{{ route('customer_edit', $customer->id) }}" class="btn btn-info btn-sm" alt="Editar">
+                                    <a href="{{ route('customer_show', $pet->customer_id) }}">{{ $pet->customer->name }}</a>
+                                </td>
+                                <td>{{ $pet->breed }}</td>
+                                <td>
+                                    <a href="{{ route('pet_edit', $pet->id) }}" class="btn btn-info btn-sm" alt="Editar">
                                         <i class="fa fa-pen"></i>
                                     </a>
-                                    <a href="#" class="btn btn-danger btn-sm delete form-delete-{{ $customer->id }}" alt="Excluir">
+                                    <a href="#" class="btn btn-danger btn-sm delete form-delete-{{ $pet->id }}" alt="Excluir">
                                         <i class="fa fa-trash"></i>
                                     </a>
-                                    <form action="{{ route('customer_delete', $customer->id) }}" method="post" class="form-delete-{{ $customer->id }}" style="display: inline;">
+                                    <form action="{{ route('pet_delete', $pet->id) }}" method="post" class="form-delete-{{ $pet->id }}" style="display: inline;">
                                         @csrf
                                         <input type="hidden" name="_method" value="DELETE">                                    
                                     </form> 
@@ -74,7 +76,7 @@
                         @endforeach
                     @else
                         <tr>
-                            <td colspan="6" style="text-align: center;">Não há clientes cadastrados.</td>
+                            <td colspan="6" style="text-align: center;">Não há pets cadastrados.</td>
                         </tr>				        
                     @endif 
                 </tbody>
@@ -82,7 +84,7 @@
         </div>
     </div>
     
-    @include('partials.pagination', ['paginator' => $customers])
+    @include('partials.pagination', ['paginator' => $pets])
 	
 	@include('partials.modal')
 

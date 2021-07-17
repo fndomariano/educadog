@@ -10,4 +10,8 @@ class Customer extends Model
     use HasFactory;
 
     protected $table = 'customer';
+
+    public function pets() {
+        return $this->hasMany(Pet::class);
+    }
 }

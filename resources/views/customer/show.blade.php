@@ -28,6 +28,21 @@
 			<th>Telefone</th>
 			<td>{{ $customer->phone }}</td>
 		</tr>
+		
+		@if (count($customer->pets) > 0)
+			<tr>
+				<th>Pets</th>
+				<td>
+					<ul>
+						@foreach ($customer->pets as $pet)
+							<li>
+								<a href="{{ route('pet_show', $pet->id) }}">{{ $pet->name }}</a>
+							</li>
+						@endforeach
+					</ul>
+				</td>
+			</tr>
+		@endif 
 	</table>
 	
 	<hr>

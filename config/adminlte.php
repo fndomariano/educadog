@@ -232,7 +232,7 @@ return [
         ],
         [
             'text'        => 'Pets',
-            'url'         => 'admin/pages',
+            'url'         => 'pets',
             'icon'        => 'fas fa-dog',            
         ],
         [
@@ -298,7 +298,7 @@ return [
             ],
         ],
         'Select2' => [
-            'active' => false,
+            'active' => true,
             'files' => [
                 [
                     'type' => 'js',

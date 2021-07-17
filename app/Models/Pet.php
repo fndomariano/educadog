@@ -10,4 +10,8 @@ class Pet extends Model
     use HasFactory;
 
     protected $table = 'pet';
+
+    public function customer() {
+        return $this->belongsTo(Customer::class);
+    }
 }

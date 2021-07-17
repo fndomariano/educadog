@@ -51,7 +51,7 @@ class CustomerController extends Controller
                 ->route('customer_index')
                 ->with('success', 'Cliente cadastrado com sucesso!');
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             
             DB::rollback();
             
@@ -99,7 +99,7 @@ class CustomerController extends Controller
                 ->route('customer_index')
                 ->with('success', 'Cliente editado com sucesso!');
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             
             DB::rollback();
             
@@ -120,7 +120,7 @@ class CustomerController extends Controller
         DB::beginTransaction();
             
         try {
-                                
+            
             $customer->delete();
             
             DB::commit();
@@ -129,8 +129,8 @@ class CustomerController extends Controller
                 ->route('customer_index')
                 ->with('success', 'Cliente removido com sucesso!'); 
             
-        } catch(Exception $e) {
-            
+        } catch(\Exception $e) {
+                   
             DB::rollback();
 
             return redirect()
