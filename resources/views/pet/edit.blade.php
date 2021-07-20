@@ -8,7 +8,7 @@
 
 @section('content')
 	
-	<form class="form" action="{{ route('pet_update', $pet->id) }}" method="post">
+	<form class="form" action="{{ route('pet_update', $pet->id) }}" method="post" enctype="multipart/form-data">
 		@csrf
         @method('PUT')
 		<div class="form-group">
@@ -36,6 +36,14 @@
         <div class="form-group">
 			<label for="phone">Foto</label>
 			<input type="file" name="photo" id="photo" class="form-control"/>
+			@if (isset($pet->getMedia('pets')[0]))
+				<br>
+				<div class="row mb-3">
+					<div class="col-sm-6">
+						<img class="img-fluid" src="{{ $pet->getMedia('pets')[0]->getUrl() }}">
+					</div>
+				</div>
+			@endif
 		</div>
 
       	<hr>

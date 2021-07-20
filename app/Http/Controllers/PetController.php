@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 
 class PetController extends Controller
 {
+    const MEDIA_COLLECTION = 'pets';
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -44,6 +46,7 @@ class PetController extends Controller
             $pet->breed = $request->breed;
             $pet->customer_id = (int) $request->customer_id;
             $pet->photo = null;
+            $pet->addMedia($request->file('photo'))->toMediaCollection(self::MEDIA_COLLECTION);
             $pet->save();
             
             DB::commit();
@@ -52,7 +55,7 @@ class PetController extends Controller
                 ->route('pet_index')
                 ->with('success', 'Pet cadastrado com sucesso!');
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             
             DB::rollback();
             
@@ -70,7 +73,10 @@ class PetController extends Controller
 			abort(404);
 		}
 
-    	return view('pet.show', compact('pet'));
+    	return view('pet.show', [
+            'pet' => $pet,
+            'photos' => $pet->getMedia('pets')
+        ]);
     }
 
     public function edit($id)
@@ -98,6 +104,19 @@ class PetController extends Controller
             $pet->breed = $request->breed;
             $pet->photo = $request->photo;
             $pet->customer_id = (int) $request->customer_id;
+            
+            $media = $pet->getMedia(self::MEDIA_COLLECTION);
+
+            if ($request->file('photo') && isset($media[0])) {
+                foreach ($media as $photo) {
+                    $photo->delete();    
+                }
+            }
+
+            if ($request->file('photo')) {
+                $pet->addMedia($request->file('photo'))->toMediaCollection(self::MEDIA_COLLECTION);
+            }
+
             $pet->save();
             
             DB::commit();
@@ -106,7 +125,7 @@ class PetController extends Controller
                 ->route('pet_index')
                 ->with('success', 'Pet editado com sucesso!');
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             
             DB::rollback();
             
@@ -136,7 +155,7 @@ class PetController extends Controller
                 ->route('pet_index')
                 ->with('success', 'Pet removido com sucesso!'); 
             
-        } catch(Exception $e) {
+        } catch(\Exception $e) {
             
             DB::rollback();
 

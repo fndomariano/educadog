@@ -29,6 +29,15 @@
 			<td>{{ $pet->breed }}</td>
 		</tr>
 		
+		@if (isset($pet->getMedia('pets')[0]))
+			<tr>
+				<th>Foto</th>			
+				<td>
+					<img src="{{ $pet->getMedia('pets')[0]->getUrl() }}">
+				</td>
+			</tr>
+		@endif
+		
 	</table>
 	
 	<hr>
