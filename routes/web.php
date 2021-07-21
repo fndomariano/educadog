@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\PetController;
+use App\Http\Controllers\ActivityController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,3 +40,11 @@ Route::post('pet/store', [PetController::class, 'store'])->name('pet_store');
 Route::get('pet/{id}/edit', [PetController::class, 'edit'])->name('pet_edit');
 Route::put('pet/{id}/update', [PetController::class, 'update'])->name('pet_update');
 Route::delete('pet/{id}/destroy', [PetController::class, 'destroy'])->name('pet_delete');
+
+Route::get('activities', [ActivityController::class, 'index'])->name('activity_index');
+Route::get('activity/{id}/show', [ActivityController::class, 'show'])->name('activity_show');
+Route::get('activity/create', [ActivityController::class, 'create'])->name('activity_create');
+Route::post('activity/store', [ActivityController::class, 'store'])->name('activity_store');
+Route::get('activity/{id}/edit', [ActivityController::class, 'edit'])->name('activity_edit');
+Route::put('activity/{id}/update', [ActivityController::class, 'update'])->name('activity_update');
+Route::delete('activity/{id}/destroy', [ActivityController::class, 'destroy'])->name('activity_delete');

@@ -237,7 +237,7 @@ return [
         ],
         [
             'text'        => 'Atividades',
-            'url'         => 'admin/pages',
+            'url'         => 'activities',
             'icon'        => 'far fa-fw fa-file',            
         ]
     ],

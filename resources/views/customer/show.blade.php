@@ -44,7 +44,7 @@
 			</tr>
 		@endif
 		
-		@if ($customer->getMedia('customers'))
+		@if ($customer->getFirstMedia('customers'))
 			<tr>
 				<th>Contrato</th>			
 				<td>
