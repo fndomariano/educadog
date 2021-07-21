@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 
 class CustomerController extends Controller
 {
+    const MEDIA_COLLECTION = 'customers';
 
     public function __construct()
     {
@@ -43,6 +44,13 @@ class CustomerController extends Controller
             $customer->name   = $request->name;
             $customer->email  = $request->email;
             $customer->phone  = $request->phone;
+            
+            $file = $request->file('contract');
+            
+            if ($file) {
+                $customer->addMedia($file)->toMediaCollection(self::MEDIA_COLLECTION);
+            }
+
             $customer->save();
             
             DB::commit();
@@ -91,6 +99,20 @@ class CustomerController extends Controller
             $customer->name   = $request->name;
             $customer->email  = $request->email;
             $customer->phone  = $request->phone;
+
+            $file = $request->file('contract');
+            $media = $customer->getMedia(self::MEDIA_COLLECTION);
+
+            if ($file && isset($media[0])) {
+                foreach ($media as $contract) {
+                    $contract->delete();    
+                }
+            }
+
+            if ($file) {
+                $customer->addMedia($file)->toMediaCollection(self::MEDIA_COLLECTION);
+            }
+
             $customer->save();
             
             DB::commit();

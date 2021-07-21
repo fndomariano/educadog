@@ -45,8 +45,13 @@ class PetController extends Controller
             $pet->name  = $request->name;
             $pet->breed = $request->breed;
             $pet->customer_id = (int) $request->customer_id;
-            $pet->photo = null;
-            $pet->addMedia($request->file('photo'))->toMediaCollection(self::MEDIA_COLLECTION);
+
+            $file = $request->file('photo');
+            
+            if ($file) {
+                $pet->addMedia($file)->toMediaCollection(self::MEDIA_COLLECTION);
+            }
+
             $pet->save();
             
             DB::commit();
@@ -101,20 +106,20 @@ class PetController extends Controller
 
             $pet = Pet::find($id);
             $pet->name  = $request->name;
-            $pet->breed = $request->breed;
-            $pet->photo = $request->photo;
+            $pet->breed = $request->breed;            
             $pet->customer_id = (int) $request->customer_id;
             
+            $file = $request->file('photo');
             $media = $pet->getMedia(self::MEDIA_COLLECTION);
 
-            if ($request->file('photo') && isset($media[0])) {
+            if ($file && $media->getFirstMedia(self::MEDIA_COLLECTION)) {
                 foreach ($media as $photo) {
                     $photo->delete();    
                 }
             }
 
-            if ($request->file('photo')) {
-                $pet->addMedia($request->file('photo'))->toMediaCollection(self::MEDIA_COLLECTION);
+            if ($file) {
+                $pet->addMedia($file)->toMediaCollection(self::MEDIA_COLLECTION);
             }
 
             $pet->save();

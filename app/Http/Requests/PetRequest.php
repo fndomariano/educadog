@@ -26,7 +26,8 @@ class PetRequest extends FormRequest
         return [
             'name'  => 'required',
             'breed' => 'required',
-            'customer_id' => 'required'
+            'customer_id' => 'required',
+            'photo' => 'mimes:jpeg,jpg,bmp,png'
         ];
     }
 
@@ -35,7 +36,8 @@ class PetRequest extends FormRequest
         return [
 			'name.required'  => 'O nome é obrigatório',
 			'breed.required' => 'A raça é obrigatória',
-            'customer_id.required' => 'O cliente é obrigatório'			
+            'customer_id.required' => 'O cliente é obrigatório',
+            'photo.mimes' => 'Extensão do arquivo está inválida'
         ];
     }
 }

@@ -42,7 +42,18 @@
 					</ul>
 				</td>
 			</tr>
-		@endif 
+		@endif
+		
+		@if ($customer->getMedia('customers'))
+			<tr>
+				<th>Contrato</th>			
+				<td>
+					<a href="{{ $customer->getFirstMedia('customers')->getUrl() }}" target="_blank">
+						Clique para visualizar o contrato
+					</a>
+				</td>
+			</tr>
+		@endif
 	</table>
 	
 	<hr>

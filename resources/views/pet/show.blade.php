@@ -29,11 +29,11 @@
 			<td>{{ $pet->breed }}</td>
 		</tr>
 		
-		@if (isset($pet->getMedia('pets')[0]))
+		@if ($pet->getFirstMedia('pets'))
 			<tr>
 				<th>Foto</th>			
 				<td>
-					<img src="{{ $pet->getMedia('pets')[0]->getUrl() }}">
+					<img src="{{ $pet->getFirstMedia('pets')->getUrl() }}">
 				</td>
 			</tr>
 		@endif

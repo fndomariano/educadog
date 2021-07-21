@@ -8,7 +8,7 @@
 
 @section('content')
 	
-	<form class="form" action="{{ route('customer_update', $customer->id) }}" method="post">
+	<form class="form" action="{{ route('customer_update', $customer->id) }}" method="post" enctype="multipart/form-data">
 		@csrf
         @method('PUT')
 		<div class="form-group">
@@ -27,6 +27,22 @@
 			<label for="phone">Telefone *</label>
 			<input type="text" name="phone" id="phone" class="form-control" value="{{ $customer->phone  }}"/>
 			<span class="text-danger">{{ $errors->first('phone') }}</span>   
+		</div>
+
+		<div class="form-group">
+			<label for="phone">Contrato</label>
+			<input type="file" name="contract" id="contract" class="form-control"/>
+			<span class="text-danger">{{ $errors->first('contract') }}</span>  
+			@if ($customer->getFirstMedia('customers'))
+				<br>
+				<div class="row mb-3">
+					<div class="col-sm-6">
+						<a href="{{ $customer->getFirstMedia('customers')->getUrl() }}" target="_blank">
+							Clique para visualizar o contrato
+						</a>
+					</div>
+				</div>
+			@endif 
 		</div>
 
       	<hr>

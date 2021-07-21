@@ -26,7 +26,8 @@ class CustomerRequest extends FormRequest
         return [
 			'name'  => 'required',
 			'email' => 'required|email|unique:customer,email,' . $this->id,
-			'phone' => 'required'			
+			'phone' => 'required',
+            'contract' => 'mimes:pdf|max:5120'
         ];
     }
 
@@ -37,7 +38,9 @@ class CustomerRequest extends FormRequest
 			'email.required' => 'O e-mail é obrigatório',
 			'email.email'    => 'O endereço de e-mail deve ser válido',
             'email.unique'    => 'O endereço de e-mail já está sendo usado',
-			'phone.required' => 'O telefone é obrigatório'			
+			'phone.required' => 'O telefone é obrigatório',
+            'contract.mimes' => 'Extensão do arquivo está inválida',
+            'contract.max' => 'O tamanho máximo permitido do arquivo é 5MB'
         ];
     }
 }

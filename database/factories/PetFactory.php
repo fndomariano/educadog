@@ -22,11 +22,11 @@ class PetFactory extends Factory
     public function definition()
     {
         $petNames = ['Scooby', 'Mel', 'Pluto', 'Banzé', 'King', 'Galeguinha', 'Bob', 'Princesa'];
-        $breeds = ['Labrador', 'SRD', 'Golden', 'Cocker', 'Poodle', 'Schnauzer'];        
+        $breeds = ['Labrador', 'SRD', 'Golden', 'Cocker', 'Poodle', 'Schnauzer', 'Beagle', 'Pastor alemão'];
+
         return [
             'name' => $petNames[array_rand($petNames)],
-            'breed' => $breeds[array_rand($breeds)],
-            'photo' => $this->faker->imageUrl(250, 250, 'animals'),
+            'breed' => $breeds[array_rand($breeds)],            
             'customer_id' => random_int(1, 15)
         ];
     }

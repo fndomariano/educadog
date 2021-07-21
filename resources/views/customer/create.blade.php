@@ -8,7 +8,7 @@
 
 @section('content')
 	
-	<form class="form" action="{{ route('customer_store') }}" method="post">
+	<form class="form" action="{{ route('customer_store') }}" method="post" enctype="multipart/form-data">
 		@csrf
 		<div class="form-group">
 			<label for="name">Nome *</label>
@@ -31,6 +31,7 @@
         <div class="form-group">
 			<label for="phone">Contrato</label>
 			<input type="file" name="contract" id="contract" class="form-control"/>
+			<span class="text-danger">{{ $errors->first('contract') }}</span>   
 		</div>
 
       	<hr>

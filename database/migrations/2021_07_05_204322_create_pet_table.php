@@ -17,7 +17,6 @@ class CreatePetTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('breed');
-            $table->string('photo')->nullable();
             $table->bigInteger('customer_id')->unsigned();
             $table->timestamps();
         });
