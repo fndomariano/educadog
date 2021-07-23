@@ -21,9 +21,16 @@ class ActivityFactory extends Factory
      */
     public function definition()
     {
+        $description = sprintf(
+            '<p>%s</p><p>%s</p><p>%s</p>', 
+            $this->faker->text, 
+            $this->faker->text, 
+            $this->faker->text
+        );
+
         return [
-            'activity_date' => $this->faker->date($format = 'Y-m-d', $max = 'now'),
-            'description' =>  $this->faker->randomHtml(5,5),
+            'activity_date' => $this->faker->date('Y-m-d', 'now'),
+            'description' => $description,
             'score' => mt_rand(1, 10),
             'pet_id' => mt_rand(1, 10)
         ];

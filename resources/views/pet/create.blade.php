@@ -24,7 +24,7 @@
 
         <div class="form-group">
 			<label for="phone">Cliente *</label>
-			<select name="customer_id" class="form-control select2">
+			<select name="customer_id" class="form-control select2" placeholder="Selecione um cliente...">
 				<option></option>
                 @foreach ($customers as $customer)
                     <option value="{{ $customer->id }}">{{ $customer->name }}</option>               

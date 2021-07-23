@@ -44,6 +44,6 @@
 	
 	<hr>
 	
-	<a href="{{ route('pet_index') }}" class="btn btn-danger">Voltar</a>
+	<a href="{{ route('activity_index') }}" class="btn btn-danger">Voltar</a>
 
 @stop

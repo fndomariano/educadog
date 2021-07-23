@@ -26,6 +26,7 @@ class ActivityRequest extends FormRequest
         return [
             'activity_date' => 'required',
             'description' => 'required',
+            'pet_id' => 'required',
             'score' => 'required'
         ];
     }
@@ -35,7 +36,8 @@ class ActivityRequest extends FormRequest
         return [
 			'activity_date.required'  => 'A data é obrigatória',
 			'description.required' => 'A descrição é obrigatória',
-			'score.required' => 'A nota é obrigatória',
+            'pet_id.required' => 'O pet é obrigatório',
+			'score.required' => 'A nota é obrigatória'
         ];
     }
 }

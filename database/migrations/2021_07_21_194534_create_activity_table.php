@@ -21,6 +21,10 @@ class CreateActivityTable extends Migration
             $table->bigInteger('pet_id')->unsigned();
             $table->timestamps();
         });
+
+        Schema::table('activity', function(Blueprint $table) {
+            $table->foreign('pet_id')->references('id')->on('pet');
+        });
     }
 
     /**
