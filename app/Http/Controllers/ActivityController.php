@@ -105,6 +105,15 @@ class ActivityController extends Controller
             $activity->pet_id = (int) $request->pet_id;
             $activity->score = (int) $request->score;
             $activity->description = $request->description;
+
+            $files = $request->file('files');
+            
+            if ($files) {
+                foreach ($files as $file) {
+                    $activity->addMedia($file)->toMediaCollection(self::MEDIA_COLLECTION);
+                }
+            }
+
             $activity->save();
             
             DB::commit();

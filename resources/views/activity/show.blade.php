@@ -41,6 +41,8 @@
         </tr>
 		
 	</table>
+
+	@include('activity.gallery', ['activity' => $activity])
 	
 	<hr>
 	

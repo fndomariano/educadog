@@ -12,6 +12,7 @@ services:
         working_dir: /var/www/
         volumes:
             - ./:/var/www
+            - ./devops/app/php.ini:/usr/local/etc/php/php.ini
         networks:
             - carolnabel
 

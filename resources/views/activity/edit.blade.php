@@ -40,6 +40,14 @@
 			<span class="text-danger">{{ $errors->first('description') }}</span>   
 		</div>
 
+		<div class="form-group">
+			<label for="files">Arquivos *</label>
+			<input type="file" name="files[]" class="form-control" multiple></textarea>
+			<span class="text-danger">{{ $errors->first('files') }}</span>   
+		</div>
+
+		@include('activity.gallery', ['activity' => $activity])
+
       	<hr>
 		<a href="{{ route('activity_index') }}" class="btn btn-danger">Voltar</a>
 		<button type="submit" class="btn btn-success float-right">Salvar</button>

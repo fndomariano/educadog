@@ -1862,6 +1862,14 @@ $(function () {
     }
   });
 });
+$(function () {
+  $(document).on('click', '[data-toggle="lightbox"]', function (event) {
+    event.preventDefault();
+    $(this).ekkoLightbox({
+      alwaysShowClose: true
+    });
+  });
+});
 $('.select2').select2({
   placeholder: $('.select2').attr('placeholder'),
   allowClear: true
