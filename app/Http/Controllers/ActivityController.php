@@ -7,6 +7,7 @@ use App\Models\Pet;
 use App\Http\Requests\ActivityRequest;
 use DB;
 use Illuminate\Http\Request;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class ActivityController extends Controller
 {
@@ -157,8 +158,30 @@ class ActivityController extends Controller
             DB::rollback();
 
             return redirect()
-                ->route('pet_index')
+                ->route('activity_index')
                 ->with('error', 'Ocorreu um ao tentar excluir a atividade!'); 
+        }
+    }
+
+    public function destroyMedia($id) {
+        
+        $media = Media::find($id);
+
+        try {
+
+            $media->delete();
+
+            return redirect()
+                ->route('activity_index')
+                ->with('success', 'Arquivo da atividade removida com sucesso!'); 
+
+        } catch(\Exception $e) {
+            
+            DB::rollback();
+
+            return redirect()
+                ->route('activity_index')
+                ->with('error', 'Ocorreu um ao tentar excluir a arquivo da atividade!'); 
         }
     }
 }

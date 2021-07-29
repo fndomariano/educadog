@@ -53,4 +53,5 @@
 		<button type="submit" class="btn btn-success float-right">Salvar</button>
 	</form>
 	
+	@include('partials.modal')
 @stop

@@ -16,11 +16,11 @@
     </div>
 </div>
 
-<div class="modal" id="meal-details">
+<div class="modal" id="gallery-details">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Detalhes da Refeição</h4>
+                <h4 class="modal-title">Galeria</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <div class="modal-body">

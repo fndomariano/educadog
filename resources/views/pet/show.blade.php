@@ -33,9 +33,14 @@
 			<tr>
 				<th>Foto</th>			
 				<td>
-					<img src="{{ $pet->getFirstMedia('pets')->getUrl() }}">
+					<div class="col-sm-3">					
+						<a href="#" class="modal-img">
+							<img src="{{ $pet->getFirstMedia('pets')->getUrl() }}" class="mw-100 modal-img-{{ $pet->getFirstMedia('pets')->id }}">
+						</a>
+					</div>
 				</td>
 			</tr>
+			@include('partials.modal')
 		@endif
 		
 	</table>

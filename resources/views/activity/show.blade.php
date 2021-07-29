@@ -43,6 +43,8 @@
 	</table>
 
 	@include('activity.gallery', ['activity' => $activity])
+
+	@include('partials.modal')
 	
 	<hr>
 	

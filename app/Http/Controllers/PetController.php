@@ -112,7 +112,7 @@ class PetController extends Controller
             $file = $request->file('photo');
             $media = $pet->getMedia(self::MEDIA_COLLECTION);
 
-            if ($file && $media->getFirstMedia(self::MEDIA_COLLECTION)) {
+            if ($file && isset($media[0])) {
                 foreach ($media as $photo) {
                     $photo->delete();    
                 }
@@ -136,7 +136,7 @@ class PetController extends Controller
             
             return redirect()
                 ->route('pet_index')
-                ->with('error', 'Ocorreu um erro ao editar o pet!');
+                ->with('error', 'Ocorreu um problema ao editar o pet!');
         }
     }
 

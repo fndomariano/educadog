@@ -42,8 +42,31 @@ $('.select2').select2({
 	allowClear: true
 });
 
-$('.delete').on('click', function (e) {
-  	
+$('.modal-video').on('click', function(event) {	
+	event.preventDefault();
+	let videoClass = $(this).find('video:first').attr('class').split(' ').pop();
+	let video = $('.'+videoClass).clone();
+	video.attr('controls', '');
+	video.appendTo($("#gallery-details .modal-body"));
+	$('#gallery-details').modal();
+});
+
+$('.modal-img').on('click', function(event) {	
+	event.preventDefault();
+	let imgClass = $(this).find('img:first').attr('class').split(' ').pop();
+	let img = $('.'+imgClass).clone();	
+	img.appendTo($("#gallery-details .modal-body"));
+	$('#gallery-details').modal();
+});
+
+$('#gallery-details').on('hidden.bs.modal', function (event) {
+	event.preventDefault();
+	$("#gallery-details .modal-body").empty();
+});
+
+$('.delete').on('click', function (event) {
+	event.preventDefault();
+	
 	$('#confirm').modal();	
 
 	let formClass = $(this).attr('class').split(' ').pop();

@@ -39,11 +39,12 @@
 			<span class="text-danger">{{ $errors->first('photo') }}</span>
 			@if ($pet->getFirstMedia('pets'))
 				<br>
-				<div class="row mb-3">
-					<div class="col-sm-6">
-						<img class="img-fluid" src="{{ $pet->getFirstMedia('pets')->getUrl() }}" />
-					</div>
+				<div class="col-sm-3">					
+					<a href="#" class="modal-img">
+						<img src="{{ $pet->getFirstMedia('pets')->getUrl() }}" class="mw-100 modal-img-{{ $pet->getFirstMedia('pets')->id }}">
+					</a>
 				</div>
+				@include('partials.modal')		
 			@endif
 		</div>
 

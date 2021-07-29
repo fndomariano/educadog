@@ -48,3 +48,4 @@ Route::post('activity/store', [ActivityController::class, 'store'])->name('activ
 Route::get('activity/{id}/edit', [ActivityController::class, 'edit'])->name('activity_edit');
 Route::put('activity/{id}/update', [ActivityController::class, 'update'])->name('activity_update');
 Route::delete('activity/{id}/destroy', [ActivityController::class, 'destroy'])->name('activity_delete');
+Route::delete('activity/destroyMedia/{id}', [ActivityController::class, 'destroyMedia'])->name('activity_delete_media');
