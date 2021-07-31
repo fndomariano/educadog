@@ -31,7 +31,7 @@
 
 		<tr>
 			<th>Ativo</th>
-			<td>{{ $customer->active ? Sim : 'Não' }}</td>
+			<td>{{ $customer->active ? 'Sim' : 'Não' }}</td>
 		</tr>
 		
 		@if (count($customer->pets) > 0)

@@ -32,7 +32,7 @@
             </select>
             <span class="text-danger">{{ $errors->first('customer_id') }}</span>
 		</div>
-
+		
         <div class="form-group">
 			<label for="phone">Foto</label>
 			<input type="file" name="photo" id="photo" class="form-control"/>
@@ -40,13 +40,18 @@
 			@if ($pet->getFirstMedia('pets'))
 				<br>
 				<div class="col-sm-3">					
-					<a href="#" class="modal-img">
-						<img src="{{ $pet->getFirstMedia('pets')->getUrl() }}" class="mw-100 modal-img-{{ $pet->getFirstMedia('pets')->id }}">
+					<a href="{{ $pet->getFirstMedia('pets')->getUrl() }}" data-fslightbox>
+						<img src="{{ $pet->getFirstMedia('pets')->getUrl() }}" class="mw-100" />
 					</a>
 				</div>
 				@include('partials.modal')		
 			@endif
 		</div>
+
+		<div class="form-check">
+        	<input type="checkbox" name="active" class="form-check-input" id="active" {{ $pet->active ? 'checked' : '' }} />
+        	<label for="active">Ativo</label>
+      	</div>
 
       	<hr>
 		<a href="{{ route('pet_index') }}" class="btn btn-danger">Voltar</a>

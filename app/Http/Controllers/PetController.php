@@ -45,7 +45,8 @@ class PetController extends Controller
             $pet->name  = $request->name;
             $pet->breed = $request->breed;
             $pet->customer_id = (int) $request->customer_id;
-
+            $pet->active = $request->active == 'on';
+            
             $file = $request->file('photo');
             
             if ($file) {
@@ -108,7 +109,8 @@ class PetController extends Controller
             $pet->name  = $request->name;
             $pet->breed = $request->breed;            
             $pet->customer_id = (int) $request->customer_id;
-            
+            $pet->active = $request->active == 'on';
+
             $file = $request->file('photo');
             $media = $pet->getMedia(self::MEDIA_COLLECTION);
 

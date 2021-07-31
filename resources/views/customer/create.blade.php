@@ -36,7 +36,7 @@
 		
 		<div class="form-check">
         	<input type="checkbox" name="active" class="form-check-input" id="active" />
-        	<label class="form-check-label" for="active">Ativo</label>
+        	<label for="active">Ativo</label>
       	</div>
 
       	<hr>

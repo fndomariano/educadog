@@ -38,6 +38,11 @@
 			<input type="file" name="photo" id="photo" class="form-control"/>
 		</div>
 
+		<div class="form-check">
+        	<input type="checkbox" name="active" class="form-check-input" id="active" />
+        	<label for="active">Ativo</label>
+      	</div>
+
       	<hr>
 		<a href="{{ route('pet_index') }}" class="btn btn-danger">Voltar</a>
 		<button type="submit" class="btn btn-success float-right">Salvar</button>

@@ -28,14 +28,19 @@
 			<th>Raça</th>
 			<td>{{ $pet->breed }}</td>
 		</tr>
+
+		<tr>
+			<th>Ativo</th>
+			<td>{{ $pet->active ? 'Sim' : 'Não' }}</td>
+		</tr>
 		
 		@if ($pet->getFirstMedia('pets'))
 			<tr>
 				<th>Foto</th>			
 				<td>
 					<div class="col-sm-3">					
-						<a href="#" class="modal-img">
-							<img src="{{ $pet->getFirstMedia('pets')->getUrl() }}" class="mw-100 modal-img-{{ $pet->getFirstMedia('pets')->id }}">
+						<a href="{{ $pet->getFirstMedia('pets')->getUrl() }}" data-fslightbox>
+							<img src="{{ $pet->getFirstMedia('pets')->getUrl() }}" class="mw-100" />
 						</a>
 					</div>
 				</td>
