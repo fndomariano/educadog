@@ -45,6 +45,11 @@
 			@endif 
 		</div>
 
+		<div class="form-check">
+        	<input type="checkbox" name="active" class="form-check-input" id="active" {{ $customer->active ? 'checked' : '' }} />
+        	<label class="form-check-label" for="active">Ativo</label>
+      	</div>
+
       	<hr>
 		<a href="{{ route('customer_index') }}" class="btn btn-danger">Voltar</a>
 		<button type="submit" class="btn btn-success float-right">Salvar</button>

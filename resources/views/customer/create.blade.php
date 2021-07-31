@@ -29,10 +29,15 @@
 		</div>
 
         <div class="form-group">
-			<label for="phone">Contrato</label>
+			<label for="contract">Contrato</label>
 			<input type="file" name="contract" id="contract" class="form-control"/>
 			<span class="text-danger">{{ $errors->first('contract') }}</span>   
 		</div>
+		
+		<div class="form-check">
+        	<input type="checkbox" name="active" class="form-check-input" id="active" />
+        	<label class="form-check-label" for="active">Ativo</label>
+      	</div>
 
       	<hr>
 		<a href="{{ route('customer_index') }}" class="btn btn-danger">Voltar</a>

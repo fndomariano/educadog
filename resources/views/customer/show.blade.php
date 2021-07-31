@@ -28,6 +28,11 @@
 			<th>Telefone</th>
 			<td>{{ $customer->phone }}</td>
 		</tr>
+
+		<tr>
+			<th>Ativo</th>
+			<td>{{ $customer->active ? Sim : 'Não' }}</td>
+		</tr>
 		
 		@if (count($customer->pets) > 0)
 			<tr>

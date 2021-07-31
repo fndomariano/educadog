@@ -44,6 +44,7 @@ class CustomerController extends Controller
             $customer->name   = $request->name;
             $customer->email  = $request->email;
             $customer->phone  = $request->phone;
+            $customer->active = $request->active == 'on';
             
             $file = $request->file('contract');
             
@@ -99,6 +100,7 @@ class CustomerController extends Controller
             $customer->name   = $request->name;
             $customer->email  = $request->email;
             $customer->phone  = $request->phone;
+            $customer->active = $request->active == 'on'; 
 
             $file = $request->file('contract');
             $media = $customer->getMedia(self::MEDIA_COLLECTION);
