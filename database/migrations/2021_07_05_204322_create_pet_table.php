@@ -15,9 +15,10 @@ class CreatePetTable extends Migration
     {
         Schema::create('pet', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('customer_id')->unsigned();
             $table->string('name');
             $table->string('breed');
-            $table->bigInteger('customer_id')->unsigned();
+            $table->boolean('active');
             $table->timestamps();
         });
 

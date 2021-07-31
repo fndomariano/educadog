@@ -27,7 +27,8 @@ class PetFactory extends Factory
         return [
             'name' => $petNames[array_rand($petNames)],
             'breed' => $breeds[array_rand($breeds)],            
-            'customer_id' => random_int(1, 15)
+            'customer_id' => random_int(1, 15),
+            'active' => rand(0, 1) === 1
         ];
     }
 }

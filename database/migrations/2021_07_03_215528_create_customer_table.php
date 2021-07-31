@@ -19,6 +19,7 @@ class CreateCustomerTable extends Migration
             $table->string('email')->unique();
             $table->string('phone');
             $table->string('password')->nullable();
+            $table->boolean('active');
             $table->timestamps();
         });
     }

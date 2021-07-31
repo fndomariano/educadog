@@ -45,6 +45,7 @@
                         <th>Nome</th>
                         <th>Cliente</th>
                         <th>Raça</th>
+                        <th>Ativo</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
@@ -60,6 +61,7 @@
                                     <a href="{{ route('customer_show', $pet->customer_id) }}">{{ $pet->customer->name }}</a>
                                 </td>
                                 <td>{{ $pet->breed }}</td>
+                                <td>{{ $pet->active ? 'Sim' : 'Não' }}</td>
                                 <td>
                                     <a href="{{ route('pet_edit', $pet->id) }}" class="btn btn-info btn-sm" alt="Editar">
                                         <i class="fa fa-pen"></i>

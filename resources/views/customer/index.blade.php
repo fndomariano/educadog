@@ -44,7 +44,8 @@
                         <th>Código</th>
                         <th>Nome</th>
                         <th>E-mail</th>
-                        <th>Telefone</th>				
+                        <th>Telefone</th>
+                        <th>Ativo</th>			
                         <th>Ações</th>
                     </tr>
                 </thead>
@@ -57,7 +58,8 @@
                                     <a href="{{ route('customer_show', $customer->id) }}">{{ $customer->name }}</a>
                                 </td>
                                 <td>{{ $customer->email }}</td>
-                                <td>{{ $customer->phone }}</td>						
+                                <td>{{ $customer->phone }}</td>
+                                <td>{{ $customer->active ? 'Sim' : 'Não' }}</td>					
                                 <td>
                                     <a href="{{ route('customer_edit', $customer->id) }}" class="btn btn-info btn-sm" alt="Editar">
                                         <i class="fa fa-pen"></i>
