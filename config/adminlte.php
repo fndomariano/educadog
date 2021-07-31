@@ -316,22 +316,7 @@ return [
                     'location' => '//cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js',
                 ],
             ],
-        ],
-        'Ekko lightbox' => [
-            'active' => true,
-            'files' => [
-                [
-                    'type' => 'css',
-                    'asset' => false,
-                    'location' => '//cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.css',
-                ],
-                [
-                    'type' => 'js',
-                    'asset' => false,
-                    'location' => '//cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.min.js',
-                ]
-            ],
-        ],
+        ],    
         'Select2' => [
             'active' => true,
             'files' => [

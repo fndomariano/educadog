@@ -49,6 +49,14 @@ class ActivityController extends Controller
             $activity->pet_id = (int) $request->pet_id;
             $activity->score = (int) $request->score;
             $activity->description = $request->description;
+
+            $files = $request->file('files');
+            
+            if ($files) {
+                foreach ($files as $file) {
+                    $activity->addMedia($file)->toMediaCollection(self::MEDIA_COLLECTION);
+                }
+            }
         
             $activity->save();
             
@@ -171,17 +179,19 @@ class ActivityController extends Controller
 
             $media->delete();
 
-            return redirect()
-                ->route('activity_index')
-                ->with('success', 'Arquivo da atividade removida com sucesso!'); 
+            return response()->json([
+                'sucess' => true,
+                'message' => 'Arquivo da atividade removida com sucesso!'
+            ], 204);
 
         } catch(\Exception $e) {
             
             DB::rollback();
 
-            return redirect()
-                ->route('activity_index')
-                ->with('error', 'Ocorreu um ao tentar excluir a arquivo da atividade!'); 
+            return response()->json([
+                'sucess' => false,
+                'message' => 'Ocorreu um ao tentar excluir a arquivo da atividade!'
+            ], 400);            
         }
     }
 }

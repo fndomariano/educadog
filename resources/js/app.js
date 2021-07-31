@@ -1,4 +1,5 @@
 require('./bootstrap');
+require('fslightbox');
 
 $('.editor').summernote({
 	height: 250
@@ -28,40 +29,9 @@ $(function() {
 	});
 });
 
-$(function () {
-    $(document).on('click', '[data-toggle="lightbox"]', function(event) {
-		event.preventDefault();
-		$(this).ekkoLightbox({
-			alwaysShowClose: true
-		});
-	});
-});
-
 $('.select2').select2({
 	placeholder: $('.select2').attr('placeholder'),
 	allowClear: true
-});
-
-$('.modal-video').on('click', function(event) {	
-	event.preventDefault();
-	let videoClass = $(this).find('video:first').attr('class').split(' ').pop();
-	let video = $('.'+videoClass).clone();
-	video.attr('controls', '');
-	video.appendTo($("#gallery-details .modal-body"));
-	$('#gallery-details').modal();
-});
-
-$('.modal-img').on('click', function(event) {	
-	event.preventDefault();
-	let imgClass = $(this).find('img:first').attr('class').split(' ').pop();
-	let img = $('.'+imgClass).clone();	
-	img.appendTo($("#gallery-details .modal-body"));
-	$('#gallery-details').modal();
-});
-
-$('#gallery-details').on('hidden.bs.modal', function (event) {
-	event.preventDefault();
-	$("#gallery-details .modal-body").empty();
 });
 
 $('.delete').on('click', function (event) {
@@ -75,4 +45,26 @@ $('.delete').on('click', function (event) {
 	$('#btn-delete-yes').on('click', function(){
 		form.submit();		
 	});		
+});
+
+$('.delete-media').on('click', function(event) {
+
+	event.preventDefault();
+	
+	let mediaId = $(this).data('media-id');
+
+	$.ajax({
+		method: 'DELETE',
+		data: { _token: $('input[name="_token"]').val() },
+		url: window.location.origin + '/activity/destroyMedia/' + mediaId,
+		complete: function(response) {
+			
+			$('a[data-media-id="'+mediaId+'"').parent().remove();
+			
+			if ($('.delete-media').length <= 0) {
+				$('.gallery').hide();
+			}			
+		}	
+	});
+	
 });

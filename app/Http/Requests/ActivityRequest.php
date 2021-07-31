@@ -27,7 +27,8 @@ class ActivityRequest extends FormRequest
             'activity_date' => 'required',
             'description' => 'required',
             'pet_id' => 'required',
-            'score' => 'required'
+            'score' => 'required',
+            'files.*' => 'mimes:mp4,jpeg,jpg,bmp,png'
         ];
     }
 
@@ -37,7 +38,8 @@ class ActivityRequest extends FormRequest
 			'activity_date.required'  => 'A data é obrigatória',
 			'description.required' => 'A descrição é obrigatória',
             'pet_id.required' => 'O pet é obrigatório',
-			'score.required' => 'A nota é obrigatória'
+			'score.required' => 'A nota é obrigatória',
+            'files.*.mimes' => 'Extensão do arquivo está inválida'
         ];
     }
 }
