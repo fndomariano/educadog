@@ -63,18 +63,22 @@ class CustomerControllerTest extends TestCase {
     public function testUpdateCustomer() : void {
 
         $customer = Customer::factory()->create();
-
+        $file = UploadedFile::fake()->create('tests/test.pdf', 4000);
+        
         $data = [
             'name'     => 'Caroline Dirschnabel',
             'email'    => 'carol.dirsch@gmail.com',
             'active'   => true,
-            'phone'    => '47986292309'
+            'phone'    => '47986292309',
+            'file'     => $file
         ];
 
         $this
             ->actingAs(User::factory()->create())
             ->put(sprintf('/customer/%s/update', $customer->id), $data)
             ->assertRedirect('/customers');
+
+        unset($data['file']);
 
         $this->assertDatabaseHas('customer', $data);
     }
