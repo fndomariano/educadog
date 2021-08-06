@@ -33,9 +33,21 @@ class CustomerControllerTest extends TestCase {
      */
     public function testListCustomers() : void {
         
-        $this->actingAs(User::factory()->create());
-        
-        $this->get('/customers')->assertOk();
+        $this
+            ->actingAs(User::factory()->create())
+            ->get('/customers')
+            ->assertOk();
+    }
+
+    /**
+     * Deve exibir a tela para exibir um novo cliente
+     */
+    public function testCustomerCreate()
+    {
+        $this
+            ->actingAs(User::factory()->create())
+            ->get('/customer/create')
+            ->assertOk();        
     }
 
     /**
@@ -58,9 +70,33 @@ class CustomerControllerTest extends TestCase {
             ->assertRedirect('/customers');
 
         unset($data['contract']);
-        
+
         $this->assertDatabaseHas('customer', $data);
         $this->assertDatabaseHas('media', ['file_name' => $file->name]);
+    }
+
+    /**
+     * Deve exibir tela para editar um cliente
+     */
+    public function testCustomerEdit()
+    {
+        $customer = Customer::factory()->create();
+
+        $this
+            ->actingAs(User::factory()->create())
+            ->get(sprintf('/customer/%s/edit', $customer->id))
+            ->assertOk();        
+    }
+
+    /**
+     * Deve exibir erro de página não encontrada
+     */
+    public function testError4040CustomerEdit()
+    {
+        $this
+            ->actingAs(User::factory()->create())
+            ->get(sprintf('/customer/%s/edit', 1))
+            ->assertNotFound();        
     }
 
     /**
@@ -103,6 +139,30 @@ class CustomerControllerTest extends TestCase {
             ->assertRedirect('/customers');
 
         $this->assertDatabaseMissing('customer', ['id' => $customer->id]);
+    }
+
+    /**
+     * Deve exibir tela com informações de um cliente
+     */
+    public function testCustomerShow()
+    {
+        $customer = Customer::factory()->create();
+
+        $this
+            ->actingAs(User::factory()->create())
+            ->get(sprintf('/customer/%s/show', $customer->id))
+            ->assertOk();        
+    }
+
+    /**
+     * Deve exibir erro de página não encontrada
+     */
+    public function testError4040CustomerShow()
+    {
+        $this
+            ->actingAs(User::factory()->create())
+            ->get(sprintf('/customer/%s/show', 1))
+            ->assertNotFound();        
     }
 
     /**
