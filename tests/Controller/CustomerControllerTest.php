@@ -43,10 +43,13 @@ class CustomerControllerTest extends TestCase {
      */
     public function testStoreCustomer() : void {
 
+        $file = UploadedFile::fake()->create('test.pdf', 4000);
+
         $data = [
             'name'     => 'Fernando',
             'email'    => 'fernando.mariano@gmail.com',
-            'phone'    => '47989940098'
+            'phone'    => '47989940098',
+            'contract' => $file
         ];
 
         $this
@@ -54,7 +57,10 @@ class CustomerControllerTest extends TestCase {
             ->post('/customer/store', $data)
             ->assertRedirect('/customers');
 
+        unset($data['contract']);
+        
         $this->assertDatabaseHas('customer', $data);
+        $this->assertDatabaseHas('media', ['file_name' => $file->name]);
     }
 
     /**
@@ -63,14 +69,14 @@ class CustomerControllerTest extends TestCase {
     public function testUpdateCustomer() : void {
 
         $customer = Customer::factory()->create();
-        $file = UploadedFile::fake()->create('tests/test.pdf', 4000);
+        $file = UploadedFile::fake()->create('test.pdf', 4000);
         
         $data = [
             'name'     => 'Caroline Dirschnabel',
             'email'    => 'carol.dirsch@gmail.com',
             'active'   => true,
             'phone'    => '47986292309',
-            'file'     => $file
+            'contract' => $file
         ];
 
         $this
@@ -78,9 +84,10 @@ class CustomerControllerTest extends TestCase {
             ->put(sprintf('/customer/%s/update', $customer->id), $data)
             ->assertRedirect('/customers');
 
-        unset($data['file']);
+        unset($data['contract']);
 
         $this->assertDatabaseHas('customer', $data);
+        $this->assertDatabaseHas('media', ['file_name' => $file->name]);
     }
 
     /**
