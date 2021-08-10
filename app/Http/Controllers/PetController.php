@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Pet;
 use App\Models\Customer;
 use App\Http\Requests\PetRequest;
+use App\Repositories\PetRepository;
+use App\Services\PetService;
 use DB;
 use Illuminate\Http\Request;
 
@@ -12,18 +14,23 @@ class PetController extends Controller
 {
     const MEDIA_COLLECTION = 'pets';
 
-    public function __construct()
+    private PetService $service;
+    
+    private PetRepository $repository;
+
+
+    public function __construct(PetService $service, PetRepository $repository)
     {
         $this->middleware('auth');
+
+        $this->service = $service;
+
+        $this->repository = $repository;
 	}
 
     public function index(Request $request)
     {
-        $term = $request->term;
-
-    	$pets = Pet::query()
-    		->where('name', 'LIKE', '%'.$term.'%')
-    		->paginate(10);
+    	$pets = $this->repository->getAll($request->term);
    
     	return view('pet.index', compact('pets'));
     }
@@ -41,19 +48,7 @@ class PetController extends Controller
 
         try {
 
-            $pet = new Pet;
-            $pet->name  = $request->name;
-            $pet->breed = $request->breed;
-            $pet->customer_id = (int) $request->customer_id;
-            $pet->active = $request->active == 'on';
-            
-            $file = $request->file('photo');
-            
-            if ($file) {
-                $pet->addMedia($file)->toMediaCollection(self::MEDIA_COLLECTION);
-            }
-
-            $pet->save();
+            $this->service->store($request);
             
             DB::commit();
 
@@ -73,11 +68,7 @@ class PetController extends Controller
 
     public function show($id)
     {
-        $pet = Pet::find($id);
-
-    	if (!$pet) {
-			abort(404);
-		}
+        $pet = $this->repository->getById($id);
 
     	return view('pet.show', [
             'pet' => $pet,
@@ -87,11 +78,7 @@ class PetController extends Controller
 
     public function edit($id)
     {
-        $pet = Pet::find($id);
-
-        if (!$pet) {
-            abort(404);
-        }
+        $pet = $this->repository->getById($id);
 
         $customers = Customer::all();
 
@@ -103,28 +90,11 @@ class PetController extends Controller
 
     public function update(PetRequest $request, $id)
     {
+        DB::beginTransaction();
+
         try {
 
-            $pet = Pet::find($id);
-            $pet->name  = $request->name;
-            $pet->breed = $request->breed;            
-            $pet->customer_id = (int) $request->customer_id;
-            $pet->active = $request->active == 'on';
-
-            $file = $request->file('photo');
-            $media = $pet->getMedia(self::MEDIA_COLLECTION);
-
-            if ($file && isset($media[0])) {
-                foreach ($media as $photo) {
-                    $photo->delete();    
-                }
-            }
-
-            if ($file) {
-                $pet->addMedia($file)->toMediaCollection(self::MEDIA_COLLECTION);
-            }
-
-            $pet->save();
+            $this->service->update($request, $id);
             
             DB::commit();
 
@@ -144,17 +114,11 @@ class PetController extends Controller
 
     public function destroy($id)
     {
-        $pet = Pet::find($id);
-
-        if (!$pet) {
-            abort(404);
-        }
-
         DB::beginTransaction();
             
         try {
                                 
-            $pet->delete();
+            $this->service->delete($id);
             
             DB::commit();
 

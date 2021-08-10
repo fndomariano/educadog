@@ -40,7 +40,7 @@ class CustomerControllerTest extends TestCase {
     }
 
     /**
-     * Deve exibir a tela para exibir um novo cliente
+     * Deve exibir a tela para cadastrar um novo cliente
      */
     public function testCustomerCreate()
     {
@@ -59,7 +59,7 @@ class CustomerControllerTest extends TestCase {
 
         $data = [
             'name'     => 'Fernando',
-            'email'    => 'fernando.mariano@gmail.com',
+            'breed'    => 'fernando.mariano@gmail.com',
             'phone'    => '47989940098',
             'contract' => $file
         ];

@@ -4,27 +4,29 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use App\Http\Requests\CustomerRequest;
+use App\Repositories\CustomerRepository;
+use App\Services\CustomerService;
 use DB;
 use Illuminate\Http\Request;
 
 class CustomerController extends Controller
 {
-    const MEDIA_COLLECTION = 'customers';
+    private CustomerService $service;
 
-    public function __construct()
+    private CustomerRepository $repository;
+
+    public function __construct(CustomerService $service, CustomerRepository $repository)
     {
         $this->middleware('auth');
+
+        $this->service = $service;
+
+        $this->repository = $repository;
 	}
 
     public function index(Request $request)
     {
-        $term = $request->term;
-
-    	$customers = Customer::query()
-    		->orWhere('name', 'LIKE', '%'.$term.'%')
-    		->orWhere('email', 'LIKE', '%'.$term.'%')
-    		->orWhere('phone', 'LIKE', '%'.$term.'%')
-    		->paginate(10);
+    	$customers = $this->repository->getAll($request->term;);
    
     	return view('customer.index', compact('customers'));
     }
@@ -40,20 +42,8 @@ class CustomerController extends Controller
 
         try {
 
-            $customer = new Customer;
-            $customer->name   = $request->name;
-            $customer->email  = $request->email;
-            $customer->phone  = $request->phone;
-            $customer->active = $request->active == 'on';
-            
-            $file = $request->file('contract');
-            
-            if ($file) {
-                $customer->addMedia($file)->toMediaCollection(self::MEDIA_COLLECTION);
-            }
+            $this->service->store($request);
 
-            $customer->save();
-            
             DB::commit();
 
             return redirect()
@@ -72,22 +62,14 @@ class CustomerController extends Controller
 
     public function show($id)
     {
-        $customer = Customer::find($id);
-
-    	if (!$customer) {
-			abort(404);
-		}
+        $customer = $this->repository->getById($id);    	
 
     	return view('customer.show', compact('customer'));
     }
 
     public function edit($id)
     {
-        $customer = Customer::find($id);
-
-        if (!$customer) {
-            abort(404);
-        }
+        $customer = $this->repository->getById($id);
 
         return view('customer.edit', compact('customer'));
     }
@@ -96,26 +78,7 @@ class CustomerController extends Controller
     {
         try {
 
-            $customer = Customer::find($id);
-            $customer->name   = $request->name;
-            $customer->email  = $request->email;
-            $customer->phone  = $request->phone;
-            $customer->active = $request->active == 'on'; 
-
-            $file = $request->file('contract');
-            $media = $customer->getMedia(self::MEDIA_COLLECTION);
-
-            if ($file && isset($media[0])) {
-                foreach ($media as $contract) {
-                    $contract->delete();    
-                }
-            }
-
-            if ($file) {
-                $customer->addMedia($file)->toMediaCollection(self::MEDIA_COLLECTION);
-            }
-
-            $customer->save();
+            $this->service->update($request, $id);
             
             DB::commit();
 
@@ -135,17 +98,11 @@ class CustomerController extends Controller
 
     public function destroy($id)
     {
-        $customer = Customer::find($id);
-
-        if (!$customer) {
-            abort(404);
-        }
-
         DB::beginTransaction();
             
         try {
             
-            $customer->delete();
+            $this->service->delete($id);
             
             DB::commit();
 
