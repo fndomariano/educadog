@@ -189,7 +189,7 @@ class PetControllerTest extends TestCase {
     }
 
     /**
-     * Deve validar extensão do arquivo da photo
+     * Deve validar extensão da foto
      */
     public function testPetPhotoExtension() : void {
         

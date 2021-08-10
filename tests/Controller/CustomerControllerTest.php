@@ -59,7 +59,7 @@ class CustomerControllerTest extends TestCase {
 
         $data = [
             'name'     => 'Fernando',
-            'breed'    => 'fernando.mariano@gmail.com',
+            'email'    => 'fernando.mariano@gmail.com',
             'phone'    => '47989940098',
             'contract' => $file
         ];

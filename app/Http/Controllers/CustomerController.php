@@ -26,7 +26,7 @@ class CustomerController extends Controller
 
     public function index(Request $request)
     {
-    	$customers = $this->repository->getAll($request->term;);
+    	$customers = $this->repository->getAll($request->term);
    
     	return view('customer.index', compact('customers'));
     }
