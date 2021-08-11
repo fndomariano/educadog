@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Http\Requests\ActivityRequest;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Tests\TestCase;
 
 class ActivityControllerTest extends TestCase {
@@ -55,8 +56,8 @@ class ActivityControllerTest extends TestCase {
     /**
      * Deve salvar uma nova atividade
      */
-    public function testStoreActivity() : void {
-        
+    public function testStoreActivity() : void 
+    {
         $files = [
             UploadedFile::fake()->create('video1.mp4'),
             UploadedFile::fake()->create('video2.mp4')
@@ -114,8 +115,8 @@ class ActivityControllerTest extends TestCase {
     /**
      * Deve salvar as alterações de uma atividade
      */
-    public function testUpdateActivity() : void {
-
+    public function testUpdateActivity() : void 
+    {
         $pet = Pet::factory()->create();
         $activity = Activity::factory()->create();
         
@@ -152,8 +153,8 @@ class ActivityControllerTest extends TestCase {
     /**
      * Deve excluir uma atividade
      */
-    public function testDestroyActivity() : void {
-        
+    public function testDestroyActivity() : void 
+    {
         $activity = Activity::factory()->create();
 
         $this
@@ -162,6 +163,32 @@ class ActivityControllerTest extends TestCase {
             ->assertRedirect('/activities');
 
         $this->assertDatabaseMissing('activity', ['id' => $activity->id]);
+    }
+
+    /**
+     * Deve excluir arquivo da atividade
+     */
+    public function testDestroyFileMedia() : void
+    {
+        // $this->withoutExceptionHandling();
+        
+        $fileName = 'video.mp4';
+        
+        $file = UploadedFile::fake()->create($fileName);
+        
+        $activity = Activity::factory()->create();        
+        $activity->addMedia($file)->toMediaCollection('activity');
+        $activity->save();
+        
+        $media = Media::where('file_name', '=', $fileName)->first();
+
+        $this
+            ->actingAs(User::factory()->create())
+            ->delete(sprintf('/activity/destroyMedia/%s', $media->id))
+            ->assertStatus(200)
+            ->assertJsonFragment(['success' => true]);
+
+        $this->assertDatabaseMissing('media', ['id' => $media->id]);
     }
 
     /**

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Activity;
 use App\Models\Pet;
 use App\Http\Requests\ActivityRequest;
+use App\Repositories\ActivityRepository;
+use App\Services\ActivityService;
 use DB;
 use Illuminate\Http\Request;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -13,18 +15,22 @@ class ActivityController extends Controller
 {
     const MEDIA_COLLECTION = 'activity';
 
-    public function __construct()
+    private ActivityService $service;
+
+    private ActivityRepository $repository;
+
+    public function __construct(ActivityService $service, ActivityRepository $repository)
     {
         $this->middleware('auth');
+
+        $this->service = $service;
+
+        $this->repository = $repository;
 	}
 
     public function index(Request $request)
     {
-        $term = $request->term;
-
-    	$activities = Activity::query()
-    		->orWhere('description', 'LIKE', '%'.$term.'%')    		
-    		->paginate(10);
+    	$activities = $this->repository->getAll($request->term);
    
     	return view('activity.index', compact('activities'));
     }
@@ -36,29 +42,13 @@ class ActivityController extends Controller
         return view('activity.create', compact('pets'));
     }
 
-    public function store(ActivityRequest $request) {
-        
+    public function store(ActivityRequest $request) 
+    {
         DB::beginTransaction();
 
         try {
 
-            $date = \DateTime::createFromFormat('d/m/Y', $request->activity_date);
-
-            $activity = new Activity;
-            $activity->activity_date = $date->format('Y-m-d');            
-            $activity->pet_id = (int) $request->pet_id;
-            $activity->score = (int) $request->score;
-            $activity->description = $request->description;
-
-            $files = $request->file('files');
-            
-            if ($files) {
-                foreach ($files as $file) {
-                    $activity->addMedia($file)->toMediaCollection(self::MEDIA_COLLECTION);
-                }
-            }
-        
-            $activity->save();
+            $this->service->store($request);
             
             DB::commit();
 
@@ -78,22 +68,14 @@ class ActivityController extends Controller
 
     public function show($id)
     {
-        $activity = Activity::find($id);
-
-    	if (!$activity) {
-			abort(404);
-		}
+        $activity = $this->repository->getById($id);
 
     	return view('activity.show', compact('activity'));
     }
 
     public function edit($id)
     {
-        $activity = Activity::find($id);
-
-        if (!$activity) {
-            abort(404);
-        }
+        $activity = $this->repository->getById($id);
 
         $pets = Pet::all();
 
@@ -107,23 +89,7 @@ class ActivityController extends Controller
     {
         try {
 
-            $date = \DateTime::createFromFormat('d/m/Y', $request->activity_date);
-            
-            $activity = Activity::find($id);
-            $activity->activity_date = $date->format('Y-m-d');
-            $activity->pet_id = (int) $request->pet_id;
-            $activity->score = (int) $request->score;
-            $activity->description = $request->description;
-
-            $files = $request->file('files');
-            
-            if ($files) {
-                foreach ($files as $file) {
-                    $activity->addMedia($file)->toMediaCollection(self::MEDIA_COLLECTION);
-                }
-            }
-
-            $activity->save();
+            $this->service->update($request, $id);            
             
             DB::commit();
 
@@ -142,18 +108,12 @@ class ActivityController extends Controller
     }
     
     public function destroy($id)
-    {
-        $activity = Activity::find($id);
-
-        if (!$activity) {
-            abort(404);
-        }
-
+    {        
         DB::beginTransaction();
             
         try {
                                 
-            $activity->delete();
+            $this->service->delete($id);
             
             DB::commit();
 
@@ -171,25 +131,29 @@ class ActivityController extends Controller
         }
     }
 
-    public function destroyMedia($id) {
-        
-        $media = Media::find($id);
+    public function destroyMedia($id) 
+    {
+        $media = Media::findOrFail($id);
+
+        DB::beginTransaction();
 
         try {
 
             $media->delete();
 
+            DB::commit();
+
             return response()->json([
-                'sucess' => true,
+                'success' => true,
                 'message' => 'Arquivo da atividade removida com sucesso!'
-            ], 204);
+            ], 200);
 
         } catch(\Exception $e) {
             
             DB::rollback();
 
             return response()->json([
-                'sucess' => false,
+                'success' => false,
                 'message' => 'Ocorreu um ao tentar excluir a arquivo da atividade!'
             ], 400);            
         }
