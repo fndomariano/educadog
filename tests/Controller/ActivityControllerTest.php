@@ -170,8 +170,6 @@ class ActivityControllerTest extends TestCase {
      */
     public function testDestroyFileMedia() : void
     {
-        // $this->withoutExceptionHandling();
-        
         $fileName = 'video.mp4';
         
         $file = UploadedFile::fake()->create($fileName);
