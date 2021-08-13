@@ -1,6 +1,6 @@
-# carolnabel web app
+# EducaDog Web application
 
-This project consists in an application to register information about owners and their pets.
+This project consists in an application to register information about customer and their pets.
 
 ## Install
 
@@ -14,24 +14,27 @@ b) Up the Docker containers
 ```bash 
 $ docker-compose -f docker-compose-dev.yml up -d
 ```
-
-c) Install dependencies
+c) Enter on container
 ```bash
-$ docker-compose exec php /bin/bash
+$ docker exec -it carolnabel-app bash
+```
+
+d) Install dependencies
+```bash
 root@docker_php:/app$ composer install
 ```
 
-d) Run migrations
+e) Run migrations
 ```bash
-$ docker-compose php php artisan migration
+root@docker_php:/app$ php artisan migrate
 ```
 
-e) You can populate the database with Seeders
+f) You can populate the database with Seeders
 ```bash
-$ docker-compose php php artisan db:seed
+root@docker_php:/app$ php artisan db:seed
 ```
 
-f) Access 
+g) Access 
 ```
-http://localhost
+http://localhost:8000
 ```
