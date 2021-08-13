@@ -22,7 +22,7 @@
 			<select name="pet_id" class="form-control select2" id="pet_id" placeholder="Selecione um pet...">
 				<option></option>
                 @foreach ($pets as $pet)
-                    <option selected="{{ $pet->id == $activity->pet_id }}" value="{{ $pet->id }}">{{ $pet->name }} ({{ $pet->customer->name }})</option>               
+                    <option {{ $pet->id == $activity->pet_id ? 'selected' : '' }} value="{{ $pet->id }}">{{ $pet->name }} ({{ $pet->customer->name }})</option>               
                 @endforeach
             </select>
             <span class="text-danger">{{ $errors->first('pet_id') }}</span>

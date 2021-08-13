@@ -27,7 +27,7 @@
 			<label for="phone">Cliente *</label>
 			<select name="customer_id" class="form-control select2" placeholder="Selecione um cliente...">				
                 @foreach ($customers as $customer)
-                    <option selected="{{ $customer->id == $pet->customer_id }}" value="{{ $customer->id }}">{{ $customer->name }}</option>               
+                    <option {{ $customer->id == $pet->customer_id ? 'selected' : '' }} value="{{ $customer->id }}">{{ $customer->name }}</option>               
                 @endforeach
             </select>
             <span class="text-danger">{{ $errors->first('customer_id') }}</span>
