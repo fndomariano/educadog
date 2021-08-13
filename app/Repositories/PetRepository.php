@@ -4,7 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Pet;
 
-class PetRepository 
+class PetRepository
 {
     private $pet;
 
@@ -15,15 +15,14 @@ class PetRepository
 
     public function getAll($term)
     {
-    	return $this->pet
+        return $this->pet
             ->query()
-    		->where('name', 'LIKE', '%'.$term.'%')
-    		->paginate(10);
+            ->where('name', 'LIKE', '%'.$term.'%')
+            ->paginate(10);
     }
 
     public function getById($id)
     {
         return $this->pet->findOrFail($id);
     }
-
 }

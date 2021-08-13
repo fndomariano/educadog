@@ -13,7 +13,8 @@ class Activity extends Model implements HasMedia
 
     protected $table = 'activity';
 
-    public function pet() {
+    public function pet()
+    {
         return $this->belongsTo(Pet::class);
     }
 }

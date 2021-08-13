@@ -12,13 +12,15 @@ use Illuminate\Http\UploadedFile;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Tests\TestCase;
 
-class ActivityControllerTest extends TestCase {
+class ActivityControllerTest extends TestCase
+{
 
     use RefreshDatabase;
 
     private $rulesMessages;
 
-    public function setUp() : void {
+    public function setUp() : void
+    {
         parent::setUp();
         $this->rulesMessages = (new ActivityRequest)->messages();
     }
@@ -26,15 +28,17 @@ class ActivityControllerTest extends TestCase {
     /**
      * Deve redirecionar para página de login quando não está autenticado.
      */
-    public function testOnlyAuthenticatedUsersCanSeeActivities() : void {
-        $this->get('/activities')             
+    public function testOnlyAuthenticatedUsersCanSeeActivities() : void
+    {
+        $this->get('/activities')
              ->assertRedirect('/login');
     }
 
     /**
      * Deve listar atividades
      */
-    public function testListActivities() : void {
+    public function testListActivities() : void
+    {
         
         $this
             ->actingAs(User::factory()->create())
@@ -50,13 +54,13 @@ class ActivityControllerTest extends TestCase {
         $this
             ->actingAs(User::factory()->create())
             ->get('/activity/create')
-            ->assertOk();        
+            ->assertOk();
     }
 
     /**
      * Deve salvar uma nova atividade
      */
-    public function testStoreActivity() : void 
+    public function testStoreActivity() : void
     {
         $files = [
             UploadedFile::fake()->create('video1.mp4'),
@@ -98,7 +102,7 @@ class ActivityControllerTest extends TestCase {
         $this
             ->actingAs(User::factory()->create())
             ->get(sprintf('/activity/%s/edit', $activity->id))
-            ->assertOk();        
+            ->assertOk();
     }
 
     /**
@@ -109,13 +113,13 @@ class ActivityControllerTest extends TestCase {
         $this
             ->actingAs(User::factory()->create())
             ->get(sprintf('/activity/%s/edit', 1))
-            ->assertNotFound();        
+            ->assertNotFound();
     }
 
     /**
      * Deve salvar as alterações de uma atividade
      */
-    public function testUpdateActivity() : void 
+    public function testUpdateActivity() : void
     {
         $pet = Pet::factory()->create();
         $activity = Activity::factory()->create();
@@ -153,7 +157,7 @@ class ActivityControllerTest extends TestCase {
     /**
      * Deve excluir uma atividade
      */
-    public function testDestroyActivity() : void 
+    public function testDestroyActivity() : void
     {
         $activity = Activity::factory()->create();
 
@@ -174,7 +178,7 @@ class ActivityControllerTest extends TestCase {
         
         $file = UploadedFile::fake()->create($fileName);
         
-        $activity = Activity::factory()->create();        
+        $activity = Activity::factory()->create();
         $activity->addMedia($file)->toMediaCollection('activity');
         $activity->save();
         
@@ -193,7 +197,7 @@ class ActivityControllerTest extends TestCase {
      * Deve exibir tela com informações de uma atividade
      */
     public function testActivityShow()
-    {   
+    {
         $customer = Customer::factory()->create();
         
         $pet = Pet::factory()->create([
@@ -207,7 +211,7 @@ class ActivityControllerTest extends TestCase {
         $this
             ->actingAs(User::factory()->create())
             ->get(sprintf('/activity/%s/show', $activity->id))
-            ->assertOk();        
+            ->assertOk();
     }
 
     /**
@@ -218,30 +222,32 @@ class ActivityControllerTest extends TestCase {
         $this
             ->actingAs(User::factory()->create())
             ->get(sprintf('/activity/%s/show', 1))
-            ->assertNotFound();        
+            ->assertNotFound();
     }
 
     /**
      * Deve efetuar a validação de campos obrigatórios da atividade
      */
-    public function testActivityRequiredFields() : void {
+    public function testActivityRequiredFields() : void
+    {
         
         $response = $this
             ->actingAs(User::factory()->create())
             ->post('/activity/store', []);
 
         $response->assertSessionHasErrors([
-            'activity_date' => $this->rulesMessages['activity_date.required'], 
-            'description'   => $this->rulesMessages['description.required'], 
+            'activity_date' => $this->rulesMessages['activity_date.required'],
+            'description'   => $this->rulesMessages['description.required'],
             'pet_id'        => $this->rulesMessages['pet_id.required'],
-            'score'         => $this->rulesMessages['score.required']            
+            'score'         => $this->rulesMessages['score.required']
         ]);
     }
 
     /**
      * Deve validar extensão dos arquivos da atividade
      */
-    public function testActivityFilesExtension() : void {
+    public function testActivityFilesExtension() : void
+    {
         
         $files = [
             UploadedFile::fake()->create('video.mp4'),
@@ -258,7 +264,7 @@ class ActivityControllerTest extends TestCase {
 
         $response = $this
             ->actingAs(User::factory()->create())
-            ->post('/activity/store', $data);        
+            ->post('/activity/store', $data);
             
         $response->assertSessionHasErrors([
             'files.1' => $this->rulesMessages['files.*.mimes']

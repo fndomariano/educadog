@@ -6,18 +6,18 @@ use App\Models\Customer;
 use App\Http\Requests\CustomerRequest;
 use App\Repositories\CustomerRepository;
 
-class CustomerService 
+class CustomerService
 {
     const MEDIA_COLLECTION = 'customers';
 
     private $repository;
 
-    public function __construct(CustomerRepository $repository) 
+    public function __construct(CustomerRepository $repository)
     {
         $this->repository = $repository;
     }
     
-    public function store(CustomerRequest $request) 
+    public function store(CustomerRequest $request)
     {
         $customer         = new Customer;
         $customer->name   = $request->name;
@@ -40,7 +40,7 @@ class CustomerService
         $customer->name   = $request->name;
         $customer->email  = $request->email;
         $customer->phone  = $request->phone;
-        $customer->active = $request->active == 'on'; 
+        $customer->active = $request->active == 'on';
 
         $file = $request->file('contract');
         $media = $customer->getMedia(self::MEDIA_COLLECTION);

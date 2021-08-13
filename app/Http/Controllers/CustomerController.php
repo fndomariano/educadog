@@ -22,13 +22,13 @@ class CustomerController extends Controller
         $this->service = $service;
 
         $this->repository = $repository;
-	}
+    }
 
     public function index(Request $request)
     {
-    	$customers = $this->repository->getAll($request->term);
+        $customers = $this->repository->getAll($request->term);
    
-    	return view('customer.index', compact('customers'));
+        return view('customer.index', compact('customers'));
     }
 
     public function create()
@@ -41,7 +41,6 @@ class CustomerController extends Controller
         DB::beginTransaction();
 
         try {
-
             $this->service->store($request);
 
             DB::commit();
@@ -49,9 +48,7 @@ class CustomerController extends Controller
             return redirect()
                 ->route('customer_index')
                 ->with('success', 'Cliente cadastrado com sucesso!');
-
         } catch (\Exception $e) {
-            
             DB::rollback();
             
             return redirect()
@@ -62,9 +59,9 @@ class CustomerController extends Controller
 
     public function show($id)
     {
-        $customer = $this->repository->getById($id);    	
+        $customer = $this->repository->getById($id);
 
-    	return view('customer.show', compact('customer'));
+        return view('customer.show', compact('customer'));
     }
 
     public function edit($id)
@@ -77,7 +74,6 @@ class CustomerController extends Controller
     public function update(CustomerRequest $request, $id)
     {
         try {
-
             $this->service->update($request, $id);
             
             DB::commit();
@@ -85,9 +81,7 @@ class CustomerController extends Controller
             return redirect()
                 ->route('customer_index')
                 ->with('success', 'Cliente editado com sucesso!');
-
         } catch (\Exception $e) {
-            
             DB::rollback();
             
             return redirect()
@@ -101,22 +95,19 @@ class CustomerController extends Controller
         DB::beginTransaction();
             
         try {
-            
             $this->service->delete($id);
             
             DB::commit();
 
             return redirect()
                 ->route('customer_index')
-                ->with('success', 'Cliente removido com sucesso!'); 
-            
-        } catch(\Exception $e) {
-                   
+                ->with('success', 'Cliente removido com sucesso!');
+        } catch (\Exception $e) {
             DB::rollback();
 
             return redirect()
                 ->route('customer_index')
-                ->with('error', 'Ocorreu um ao tentar excluir o cliente!'); 
+                ->with('error', 'Ocorreu um ao tentar excluir o cliente!');
         }
     }
 }

@@ -31,11 +31,11 @@ class PetRequest extends FormRequest
         ];
     }
 
-    public function messages() 
+    public function messages()
     {
         return [
-			'name.required'  => 'O nome é obrigatório',
-			'breed.required' => 'A raça é obrigatória',
+            'name.required'  => 'O nome é obrigatório',
+            'breed.required' => 'A raça é obrigatória',
             'customer_id.required' => 'O cliente é obrigatório',
             'photo.mimes' => 'Extensão do arquivo está inválida'
         ];

@@ -6,13 +6,13 @@ use App\Models\Pet;
 use App\Http\Requests\PetRequest;
 use App\Repositories\PetRepository;
 
-class PetService 
+class PetService
 {
     const MEDIA_COLLECTION = 'pets';
 
     private $repository;
 
-    public function __construct(PetRepository $repository) 
+    public function __construct(PetRepository $repository)
     {
         $this->repository = $repository;
     }
@@ -38,7 +38,7 @@ class PetService
     {
         $pet = $this->repository->getById($id);
         $pet->name  = $request->name;
-        $pet->breed = $request->breed;            
+        $pet->breed = $request->breed;
         $pet->customer_id = (int) $request->customer_id;
         $pet->active = $request->active == 'on';
 

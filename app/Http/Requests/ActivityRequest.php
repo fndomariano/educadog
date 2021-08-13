@@ -32,13 +32,13 @@ class ActivityRequest extends FormRequest
         ];
     }
 
-    public function messages() 
+    public function messages()
     {
         return [
-			'activity_date.required'  => 'A data é obrigatória',
-			'description.required' => 'A descrição é obrigatória',
+            'activity_date.required'  => 'A data é obrigatória',
+            'description.required' => 'A descrição é obrigatória',
             'pet_id.required' => 'O pet é obrigatório',
-			'score.required' => 'A nota é obrigatória',
+            'score.required' => 'A nota é obrigatória',
             'files.*.mimes' => 'Extensão do arquivo está inválida'
         ];
     }

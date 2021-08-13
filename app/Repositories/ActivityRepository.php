@@ -17,8 +17,8 @@ class ActivityRepository
     {
         return $this->activity
             ->query()
-    		->where('description', 'LIKE', '%'.$term.'%')    		
-    		->paginate(10);
+            ->where('description', 'LIKE', '%'.$term.'%')
+            ->paginate(10);
     }
 
     public function getById($id)

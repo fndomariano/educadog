@@ -12,8 +12,6 @@ use Illuminate\Http\Request;
 
 class PetController extends Controller
 {
-    const MEDIA_COLLECTION = 'pets';
-
     private PetService $service;
     
     private PetRepository $repository;
@@ -26,13 +24,13 @@ class PetController extends Controller
         $this->service = $service;
 
         $this->repository = $repository;
-	}
+    }
 
     public function index(Request $request)
     {
-    	$pets = $this->repository->getAll($request->term);
+        $pets = $this->repository->getAll($request->term);
    
-    	return view('pet.index', compact('pets'));
+        return view('pet.index', compact('pets'));
     }
 
     public function create()
@@ -47,7 +45,6 @@ class PetController extends Controller
         DB::beginTransaction();
 
         try {
-
             $this->service->store($request);
             
             DB::commit();
@@ -55,9 +52,7 @@ class PetController extends Controller
             return redirect()
                 ->route('pet_index')
                 ->with('success', 'Pet cadastrado com sucesso!');
-
         } catch (\Exception $e) {
-            
             DB::rollback();
             
             return redirect()
@@ -70,7 +65,7 @@ class PetController extends Controller
     {
         $pet = $this->repository->getById($id);
 
-    	return view('pet.show', [
+        return view('pet.show', [
             'pet' => $pet,
             'photos' => $pet->getMedia('pets')
         ]);
@@ -93,7 +88,6 @@ class PetController extends Controller
         DB::beginTransaction();
 
         try {
-
             $this->service->update($request, $id);
             
             DB::commit();
@@ -101,9 +95,7 @@ class PetController extends Controller
             return redirect()
                 ->route('pet_index')
                 ->with('success', 'Pet editado com sucesso!');
-
         } catch (\Exception $e) {
-            
             DB::rollback();
             
             return redirect()
@@ -117,22 +109,19 @@ class PetController extends Controller
         DB::beginTransaction();
             
         try {
-                                
             $this->service->delete($id);
             
             DB::commit();
 
             return redirect()
                 ->route('pet_index')
-                ->with('success', 'Pet removido com sucesso!'); 
-            
-        } catch(\Exception $e) {
-            
+                ->with('success', 'Pet removido com sucesso!');
+        } catch (\Exception $e) {
             DB::rollback();
 
             return redirect()
                 ->route('pet_index')
-                ->with('error', 'Ocorreu um ao tentar excluir o pet!'); 
+                ->with('error', 'Ocorreu um ao tentar excluir o pet!');
         }
     }
 }

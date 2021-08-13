@@ -224,21 +224,21 @@ return [
     |
     */
 
-    'menu' => [                        
+    'menu' => [
         [
             'text'        => 'Clientes',
             'url'         => 'customers',
-            'icon'        => 'far fa-fw fa-user',            
+            'icon'        => 'far fa-fw fa-user',
         ],
         [
             'text'        => 'Pets',
             'url'         => 'pets',
-            'icon'        => 'fas fa-dog',            
+            'icon'        => 'fas fa-dog',
         ],
         [
             'text'        => 'Atividades',
             'url'         => 'activities',
-            'icon'        => 'far fa-fw fa-file',            
+            'icon'        => 'far fa-fw fa-file',
         ]
     ],
 
@@ -316,7 +316,7 @@ return [
                     'location' => '//cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js',
                 ],
             ],
-        ],    
+        ],
         'Select2' => [
             'active' => true,
             'files' => [

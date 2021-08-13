@@ -13,7 +13,8 @@ class Pet extends Model implements HasMedia
 
     protected $table = 'pet';
 
-    public function customer() {
+    public function customer()
+    {
         return $this->belongsTo(Customer::class);
     }
 }

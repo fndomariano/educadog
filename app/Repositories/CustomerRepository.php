@@ -4,11 +4,11 @@ namespace App\Repositories;
 
 use App\Models\Customer;
 
-class CustomerRepository 
+class CustomerRepository
 {
     private $customer;
 
-    public function __construct(Customer $customer) 
+    public function __construct(Customer $customer)
     {
         $this->customer = $customer;
     }
@@ -17,10 +17,10 @@ class CustomerRepository
     {
         return $this->customer
             ->query()
-    		->orWhere('name', 'LIKE', '%'.$term.'%')
-    		->orWhere('email', 'LIKE', '%'.$term.'%')
-    		->orWhere('phone', 'LIKE', '%'.$term.'%')
-    		->paginate(10);
+            ->orWhere('name', 'LIKE', '%'.$term.'%')
+            ->orWhere('email', 'LIKE', '%'.$term.'%')
+            ->orWhere('phone', 'LIKE', '%'.$term.'%')
+            ->paginate(10);
     }
 
     public function getById($id)

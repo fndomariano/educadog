@@ -10,13 +10,15 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Tests\TestCase;
 
-class PetControllerTest extends TestCase {
+class PetControllerTest extends TestCase
+{
 
     use RefreshDatabase;
 
     private $rulesMessages;
 
-    public function setUp() : void {
+    public function setUp() : void
+    {
         parent::setUp();
         $this->rulesMessages = (new PetRequest)->messages();
     }
@@ -24,15 +26,17 @@ class PetControllerTest extends TestCase {
     /**
      * Deve redirecionar para página de login quando não está autenticado.
      */
-    public function testOnlyAuthenticatedUsersCanSeePets() : void {
-        $this->get('/pets')             
+    public function testOnlyAuthenticatedUsersCanSeePets() : void
+    {
+        $this->get('/pets')
              ->assertRedirect('/login');
     }
 
     /**
      * Deve listar pets
      */
-    public function testListPets() : void {
+    public function testListPets() : void
+    {
         
         $this
             ->actingAs(User::factory()->create())
@@ -48,13 +52,14 @@ class PetControllerTest extends TestCase {
         $this
             ->actingAs(User::factory()->create())
             ->get('/pet/create')
-            ->assertOk();        
+            ->assertOk();
     }
 
     /**
      * Deve salvar um novo Pet
      */
-    public function testStorePet() : void {
+    public function testStorePet() : void
+    {
 
         $file = UploadedFile::fake()->create('test.jpg');
 
@@ -87,7 +92,7 @@ class PetControllerTest extends TestCase {
         $this
             ->actingAs(User::factory()->create())
             ->get(sprintf('/pet/%s/edit', $pet->id))
-            ->assertOk();        
+            ->assertOk();
     }
 
     /**
@@ -98,13 +103,14 @@ class PetControllerTest extends TestCase {
         $this
             ->actingAs(User::factory()->create())
             ->get(sprintf('/pet/%s/edit', 1))
-            ->assertNotFound();        
+            ->assertNotFound();
     }
 
     /**
      * Deve salvar as alterações de um pet
      */
-    public function testUpdatePet() : void {
+    public function testUpdatePet() : void
+    {
 
         $customer = Customer::factory()->create();
         $pet = Pet::factory()->create();
@@ -132,7 +138,8 @@ class PetControllerTest extends TestCase {
     /**
      * Deve excluir um pet
      */
-    public function testDestroyPet() : void {
+    public function testDestroyPet() : void
+    {
         
         $pet = Pet::factory()->create();
 
@@ -158,7 +165,7 @@ class PetControllerTest extends TestCase {
         $this
             ->actingAs(User::factory()->create())
             ->get(sprintf('/pet/%s/show', $pet->id))
-            ->assertOk();        
+            ->assertOk();
     }
 
     /**
@@ -169,21 +176,22 @@ class PetControllerTest extends TestCase {
         $this
             ->actingAs(User::factory()->create())
             ->get(sprintf('/pet/%s/show', 1))
-            ->assertNotFound();        
+            ->assertNotFound();
     }
 
     /**
      * Deve efetuar a validação de campos obrigatórios do pet
      */
-    public function testPetRequiredFields() : void {
+    public function testPetRequiredFields() : void
+    {
         
         $response = $this
             ->actingAs(User::factory()->create())
             ->post('/pet/store', []);
 
         $response->assertSessionHasErrors([
-            'name'        => $this->rulesMessages['name.required'], 
-            'breed'       => $this->rulesMessages['breed.required'], 
+            'name'        => $this->rulesMessages['name.required'],
+            'breed'       => $this->rulesMessages['breed.required'],
             'customer_id' => $this->rulesMessages['customer_id.required']
         ]);
     }
@@ -191,7 +199,8 @@ class PetControllerTest extends TestCase {
     /**
      * Deve validar extensão da foto
      */
-    public function testPetPhotoExtension() : void {
+    public function testPetPhotoExtension() : void
+    {
         
         $file = UploadedFile::fake()->create('test/teste.pdf');
 

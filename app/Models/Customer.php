@@ -13,7 +13,8 @@ class Customer extends Model implements HasMedia
 
     protected $table = 'customer';
 
-    public function pets() {
+    public function pets()
+    {
         return $this->hasMany(Pet::class);
     }
 }
