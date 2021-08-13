@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 class PetController extends Controller
 {
     private PetService $service;
-    
+
     private PetRepository $repository;
 
 
@@ -29,7 +29,7 @@ class PetController extends Controller
     public function index(Request $request)
     {
         $pets = $this->repository->getAll($request->term);
-   
+
         return view('pet.index', compact('pets'));
     }
 
@@ -46,7 +46,7 @@ class PetController extends Controller
 
         try {
             $this->service->store($request);
-            
+
             DB::commit();
 
             return redirect()
@@ -54,7 +54,7 @@ class PetController extends Controller
                 ->with('success', 'Pet cadastrado com sucesso!');
         } catch (\Exception $e) {
             DB::rollback();
-            
+
             return redirect()
                 ->route('pet_index')
                 ->with('error', 'Ocorreu um erro ao salvar o pet!');
@@ -89,7 +89,7 @@ class PetController extends Controller
 
         try {
             $this->service->update($request, $id);
-            
+
             DB::commit();
 
             return redirect()
@@ -97,7 +97,7 @@ class PetController extends Controller
                 ->with('success', 'Pet editado com sucesso!');
         } catch (\Exception $e) {
             DB::rollback();
-            
+
             return redirect()
                 ->route('pet_index')
                 ->with('error', 'Ocorreu um problema ao editar o pet!');
@@ -107,10 +107,10 @@ class PetController extends Controller
     public function destroy($id)
     {
         DB::beginTransaction();
-            
+
         try {
             $this->service->delete($id);
-            
+
             DB::commit();
 
             return redirect()

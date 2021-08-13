@@ -12,6 +12,6 @@ grumphp:
             triggered_by: ['php']
             regexp_type: G
         phpcs:
-            standard: PSR2
+            standard: PSR12
             triggered_by: [php]
             ignore_patterns: [./resources/*, ./database/*, ./bootstrap/*]

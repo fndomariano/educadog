@@ -8,7 +8,7 @@ use App\Repositories\CustomerRepository;
 
 class CustomerService
 {
-    const MEDIA_COLLECTION = 'customers';
+    private const MEDIA_COLLECTION = 'customers';
 
     private $repository;
 
@@ -16,17 +16,17 @@ class CustomerService
     {
         $this->repository = $repository;
     }
-    
+
     public function store(CustomerRequest $request)
     {
-        $customer         = new Customer;
+        $customer         = new Customer();
         $customer->name   = $request->name;
         $customer->email  = $request->email;
         $customer->phone  = $request->phone;
         $customer->active = $request->active == 'on';
-        
+
         $file = $request->file('contract');
-        
+
         if ($file) {
             $customer->addMedia($file)->toMediaCollection(self::MEDIA_COLLECTION);
         }

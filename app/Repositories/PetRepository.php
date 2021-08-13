@@ -17,7 +17,7 @@ class PetRepository
     {
         return $this->pet
             ->query()
-            ->where('name', 'LIKE', '%'.$term.'%')
+            ->where('name', 'LIKE', '%' . $term . '%')
             ->paginate(10);
     }
 

@@ -11,21 +11,20 @@ use Tests\TestCase;
 
 class CustomerControllerTest extends TestCase
 {
-
     use RefreshDatabase;
 
     private $rulesMessages;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
-        $this->rulesMessages = (new CustomerRequest)->messages();
+        $this->rulesMessages = (new CustomerRequest())->messages();
     }
 
     /**
      * Deve redirecionar para página de login quando não está autenticado.
      */
-    public function testOnlyAuthenticatedUsersCanSeeCustomers() : void
+    public function testOnlyAuthenticatedUsersCanSeeCustomers(): void
     {
         $this->get('/customers')
              ->assertRedirect('/login');
@@ -34,9 +33,9 @@ class CustomerControllerTest extends TestCase
     /**
      * Deve listar clientes
      */
-    public function testListCustomers() : void
+    public function testListCustomers(): void
     {
-        
+
         $this
             ->actingAs(User::factory()->create())
             ->get('/customers')
@@ -57,7 +56,7 @@ class CustomerControllerTest extends TestCase
     /**
      * Deve salvar um novo cliente
      */
-    public function testStoreCustomer() : void
+    public function testStoreCustomer(): void
     {
 
         $file = UploadedFile::fake()->create('test.pdf', 4000);
@@ -107,12 +106,12 @@ class CustomerControllerTest extends TestCase
     /**
      * Deve salvar as alterações de um cliente
      */
-    public function testUpdateCustomer() : void
+    public function testUpdateCustomer(): void
     {
 
         $customer = Customer::factory()->create();
         $file = UploadedFile::fake()->create('test.pdf', 4000);
-        
+
         $data = [
             'name'     => 'Caroline Dirschnabel',
             'email'    => 'carol.dirsch@gmail.com',
@@ -135,9 +134,9 @@ class CustomerControllerTest extends TestCase
     /**
      * Deve excluir um cliente
      */
-    public function testDestroyCustomer() : void
+    public function testDestroyCustomer(): void
     {
-        
+
         $customer = Customer::factory()->create();
 
         $this
@@ -175,9 +174,9 @@ class CustomerControllerTest extends TestCase
     /**
      * Deve efetuar a validação de campos obrigatórios do cliente
      */
-    public function testCustomerRequiredFields() : void
+    public function testCustomerRequiredFields(): void
     {
-        
+
         $response = $this
             ->actingAs(User::factory()->create())
             ->post('/customer/store', []);
@@ -192,7 +191,7 @@ class CustomerControllerTest extends TestCase
     /**
      * Deve efetuar a validação de e-mail único
      */
-    public function testCustomerUniqueEmail() : void
+    public function testCustomerUniqueEmail(): void
     {
 
         $customer = Customer::factory()->create();
@@ -207,7 +206,7 @@ class CustomerControllerTest extends TestCase
         $response = $this
             ->actingAs(User::factory()->create())
             ->post('/customer/store', $data);
-            
+
         $response->assertSessionHasErrors([
             'email' => $this->rulesMessages['email.unique']
         ]);
@@ -216,9 +215,9 @@ class CustomerControllerTest extends TestCase
     /**
      * Deve validar extensão do arquivo de contrato
      */
-    public function testCustomerContractExtension() : void
+    public function testCustomerContractExtension(): void
     {
-        
+
         $file = UploadedFile::fake()->create('tests/test.txt');
 
         $data = [
@@ -232,7 +231,7 @@ class CustomerControllerTest extends TestCase
         $response = $this
             ->actingAs(User::factory()->create())
             ->post('/customer/store', $data);
-            
+
         $response->assertSessionHasErrors([
             'contract' => $this->rulesMessages['contract.mimes']
         ]);
@@ -241,9 +240,9 @@ class CustomerControllerTest extends TestCase
     /**
      * Deve validar tamanho do arquivo de contrato
      */
-    public function testCustomerContractSize() : void
+    public function testCustomerContractSize(): void
     {
-        
+
         $file = UploadedFile::fake()->create('tests/test.pdf', 6000);
 
         $data = [
@@ -257,7 +256,7 @@ class CustomerControllerTest extends TestCase
         $response = $this
             ->actingAs(User::factory()->create())
             ->post('/customer/store', $data);
-            
+
         $response->assertSessionHasErrors([
             'contract' => $this->rulesMessages['contract.max']
         ]);

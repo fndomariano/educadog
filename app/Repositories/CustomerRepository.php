@@ -17,9 +17,9 @@ class CustomerRepository
     {
         return $this->customer
             ->query()
-            ->orWhere('name', 'LIKE', '%'.$term.'%')
-            ->orWhere('email', 'LIKE', '%'.$term.'%')
-            ->orWhere('phone', 'LIKE', '%'.$term.'%')
+            ->orWhere('name', 'LIKE', '%' . $term . '%')
+            ->orWhere('email', 'LIKE', '%' . $term . '%')
+            ->orWhere('phone', 'LIKE', '%' . $term . '%')
             ->paginate(10);
     }
 

@@ -8,7 +8,7 @@ use App\Repositories\PetRepository;
 
 class PetService
 {
-    const MEDIA_COLLECTION = 'pets';
+    private const MEDIA_COLLECTION = 'pets';
 
     private $repository;
 
@@ -19,14 +19,14 @@ class PetService
 
     public function store(PetRequest $request)
     {
-        $pet = new Pet;
+        $pet = new Pet();
         $pet->name  = $request->name;
         $pet->breed = $request->breed;
         $pet->customer_id = (int) $request->customer_id;
         $pet->active = $request->active == 'on';
-        
+
         $file = $request->file('photo');
-        
+
         if ($file) {
             $pet->addMedia($file)->toMediaCollection(self::MEDIA_COLLECTION);
         }

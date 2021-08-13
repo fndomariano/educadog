@@ -17,7 +17,7 @@ class ActivityRepository
     {
         return $this->activity
             ->query()
-            ->where('description', 'LIKE', '%'.$term.'%')
+            ->where('description', 'LIKE', '%' . $term . '%')
             ->paginate(10);
     }
 

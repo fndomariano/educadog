@@ -27,7 +27,7 @@ class CustomerController extends Controller
     public function index(Request $request)
     {
         $customers = $this->repository->getAll($request->term);
-   
+
         return view('customer.index', compact('customers'));
     }
 
@@ -50,7 +50,7 @@ class CustomerController extends Controller
                 ->with('success', 'Cliente cadastrado com sucesso!');
         } catch (\Exception $e) {
             DB::rollback();
-            
+
             return redirect()
                 ->route('customer_index')
                 ->with('error', 'Ocorreu um erro ao salvar o cliente!');
@@ -75,7 +75,7 @@ class CustomerController extends Controller
     {
         try {
             $this->service->update($request, $id);
-            
+
             DB::commit();
 
             return redirect()
@@ -83,7 +83,7 @@ class CustomerController extends Controller
                 ->with('success', 'Cliente editado com sucesso!');
         } catch (\Exception $e) {
             DB::rollback();
-            
+
             return redirect()
                 ->route('customer_index')
                 ->with('error', 'Ocorreu um erro ao editar o cliente!');
@@ -93,10 +93,10 @@ class CustomerController extends Controller
     public function destroy($id)
     {
         DB::beginTransaction();
-            
+
         try {
             $this->service->delete($id);
-            
+
             DB::commit();
 
             return redirect()

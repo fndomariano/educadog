@@ -12,21 +12,20 @@ use Tests\TestCase;
 
 class PetControllerTest extends TestCase
 {
-
     use RefreshDatabase;
 
     private $rulesMessages;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
-        $this->rulesMessages = (new PetRequest)->messages();
+        $this->rulesMessages = (new PetRequest())->messages();
     }
 
     /**
      * Deve redirecionar para página de login quando não está autenticado.
      */
-    public function testOnlyAuthenticatedUsersCanSeePets() : void
+    public function testOnlyAuthenticatedUsersCanSeePets(): void
     {
         $this->get('/pets')
              ->assertRedirect('/login');
@@ -35,9 +34,9 @@ class PetControllerTest extends TestCase
     /**
      * Deve listar pets
      */
-    public function testListPets() : void
+    public function testListPets(): void
     {
-        
+
         $this
             ->actingAs(User::factory()->create())
             ->get('/pets')
@@ -58,7 +57,7 @@ class PetControllerTest extends TestCase
     /**
      * Deve salvar um novo Pet
      */
-    public function testStorePet() : void
+    public function testStorePet(): void
     {
 
         $file = UploadedFile::fake()->create('test.jpg');
@@ -109,13 +108,13 @@ class PetControllerTest extends TestCase
     /**
      * Deve salvar as alterações de um pet
      */
-    public function testUpdatePet() : void
+    public function testUpdatePet(): void
     {
 
         $customer = Customer::factory()->create();
         $pet = Pet::factory()->create();
         $file = UploadedFile::fake()->create('teste.jpg');
-        
+
         $data = [
             'name'         => 'Pluto',
             'breed'        => 'Labrador',
@@ -138,9 +137,9 @@ class PetControllerTest extends TestCase
     /**
      * Deve excluir um pet
      */
-    public function testDestroyPet() : void
+    public function testDestroyPet(): void
     {
-        
+
         $pet = Pet::factory()->create();
 
         $this
@@ -157,7 +156,7 @@ class PetControllerTest extends TestCase
     public function testPetShow()
     {
         $customer = Customer::factory()->create();
-        
+
         $pet = Pet::factory()->create([
             'customer_id' => $customer->id
         ]);
@@ -182,9 +181,9 @@ class PetControllerTest extends TestCase
     /**
      * Deve efetuar a validação de campos obrigatórios do pet
      */
-    public function testPetRequiredFields() : void
+    public function testPetRequiredFields(): void
     {
-        
+
         $response = $this
             ->actingAs(User::factory()->create())
             ->post('/pet/store', []);
@@ -199,9 +198,9 @@ class PetControllerTest extends TestCase
     /**
      * Deve validar extensão da foto
      */
-    public function testPetPhotoExtension() : void
+    public function testPetPhotoExtension(): void
     {
-        
+
         $file = UploadedFile::fake()->create('test/teste.pdf');
 
         $data = [
@@ -215,7 +214,7 @@ class PetControllerTest extends TestCase
         $response = $this
             ->actingAs(User::factory()->create())
             ->post('/pet/store', $data);
-            
+
         $response->assertSessionHasErrors([
             'photo' => $this->rulesMessages['photo.mimes']
         ]);

@@ -29,7 +29,7 @@ class ActivityController extends Controller
     public function index(Request $request)
     {
         $activities = $this->repository->getAll($request->term);
-   
+
         return view('activity.index', compact('activities'));
     }
 
@@ -46,7 +46,7 @@ class ActivityController extends Controller
 
         try {
             $this->service->store($request);
-            
+
             DB::commit();
 
             return redirect()
@@ -54,7 +54,7 @@ class ActivityController extends Controller
                 ->with('success', 'Atividade cadastrada com sucesso!');
         } catch (\Exception $e) {
             DB::rollback();
-            
+
             return redirect()
                 ->route('activity_index')
                 ->with('error', 'Ocorreu um erro ao salvar a atividade!');
@@ -84,7 +84,7 @@ class ActivityController extends Controller
     {
         try {
             $this->service->update($request, $id);
-            
+
             DB::commit();
 
             return redirect()
@@ -92,20 +92,20 @@ class ActivityController extends Controller
                 ->with('success', 'Atividade editada com sucesso!');
         } catch (\Exception $e) {
             DB::rollback();
-            
+
             return redirect()
                 ->route('activity_index')
                 ->with('error', 'Ocorreu um erro ao editar a atividade!');
         }
     }
-    
+
     public function destroy($id)
     {
         DB::beginTransaction();
-            
+
         try {
             $this->service->delete($id);
-            
+
             DB::commit();
 
             return redirect()

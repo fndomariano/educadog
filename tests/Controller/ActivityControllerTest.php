@@ -14,21 +14,20 @@ use Tests\TestCase;
 
 class ActivityControllerTest extends TestCase
 {
-
     use RefreshDatabase;
 
     private $rulesMessages;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
-        $this->rulesMessages = (new ActivityRequest)->messages();
+        $this->rulesMessages = (new ActivityRequest())->messages();
     }
 
     /**
      * Deve redirecionar para página de login quando não está autenticado.
      */
-    public function testOnlyAuthenticatedUsersCanSeeActivities() : void
+    public function testOnlyAuthenticatedUsersCanSeeActivities(): void
     {
         $this->get('/activities')
              ->assertRedirect('/login');
@@ -37,9 +36,9 @@ class ActivityControllerTest extends TestCase
     /**
      * Deve listar atividades
      */
-    public function testListActivities() : void
+    public function testListActivities(): void
     {
-        
+
         $this
             ->actingAs(User::factory()->create())
             ->get('/activities')
@@ -60,7 +59,7 @@ class ActivityControllerTest extends TestCase
     /**
      * Deve salvar uma nova atividade
      */
-    public function testStoreActivity() : void
+    public function testStoreActivity(): void
     {
         $files = [
             UploadedFile::fake()->create('video1.mp4'),
@@ -82,11 +81,11 @@ class ActivityControllerTest extends TestCase
 
         $date = \DateTime::createFromFormat('d/m/Y', $data['activity_date']);
         $data['activity_date'] = $date->format('Y-m-d');
-        
+
         unset($data['files']);
 
         $this->assertDatabaseHas('activity', $data);
-        
+
         foreach ($files as $file) {
             $this->assertDatabaseHas('media', ['file_name' => $file->name]);
         }
@@ -119,16 +118,16 @@ class ActivityControllerTest extends TestCase
     /**
      * Deve salvar as alterações de uma atividade
      */
-    public function testUpdateActivity() : void
+    public function testUpdateActivity(): void
     {
         $pet = Pet::factory()->create();
         $activity = Activity::factory()->create();
-        
+
         $files = [
             UploadedFile::fake()->create('video1.mp4'),
             UploadedFile::fake()->create('video2.mp4')
         ];
-        
+
         $data = [
             'activity_date' => '16/07/2021',
             'pet_id'        => $pet->id,
@@ -143,12 +142,12 @@ class ActivityControllerTest extends TestCase
             ->assertRedirect('/activities');
 
         unset($data['files']);
-        
+
         $date = \DateTime::createFromFormat('d/m/Y', $data['activity_date']);
         $data['activity_date'] = $date->format('Y-m-d');
 
         $this->assertDatabaseHas('activity', $data);
-        
+
         foreach ($files as $file) {
             $this->assertDatabaseHas('media', ['file_name' => $file->name]);
         }
@@ -157,7 +156,7 @@ class ActivityControllerTest extends TestCase
     /**
      * Deve excluir uma atividade
      */
-    public function testDestroyActivity() : void
+    public function testDestroyActivity(): void
     {
         $activity = Activity::factory()->create();
 
@@ -172,16 +171,16 @@ class ActivityControllerTest extends TestCase
     /**
      * Deve excluir arquivo da atividade
      */
-    public function testDestroyFileMedia() : void
+    public function testDestroyFileMedia(): void
     {
         $fileName = 'video.mp4';
-        
+
         $file = UploadedFile::fake()->create($fileName);
-        
+
         $activity = Activity::factory()->create();
         $activity->addMedia($file)->toMediaCollection('activity');
         $activity->save();
-        
+
         $media = Media::where('file_name', '=', $fileName)->first();
 
         $this
@@ -199,11 +198,11 @@ class ActivityControllerTest extends TestCase
     public function testActivityShow()
     {
         $customer = Customer::factory()->create();
-        
+
         $pet = Pet::factory()->create([
             'customer_id' => $customer->id
         ]);
-        
+
         $activity = Activity::factory()->create([
             'pet_id' => $pet->id
         ]);
@@ -228,9 +227,9 @@ class ActivityControllerTest extends TestCase
     /**
      * Deve efetuar a validação de campos obrigatórios da atividade
      */
-    public function testActivityRequiredFields() : void
+    public function testActivityRequiredFields(): void
     {
-        
+
         $response = $this
             ->actingAs(User::factory()->create())
             ->post('/activity/store', []);
@@ -246,9 +245,9 @@ class ActivityControllerTest extends TestCase
     /**
      * Deve validar extensão dos arquivos da atividade
      */
-    public function testActivityFilesExtension() : void
+    public function testActivityFilesExtension(): void
     {
-        
+
         $files = [
             UploadedFile::fake()->create('video.mp4'),
             UploadedFile::fake()->create('file.pdf')
@@ -265,7 +264,7 @@ class ActivityControllerTest extends TestCase
         $response = $this
             ->actingAs(User::factory()->create())
             ->post('/activity/store', $data);
-            
+
         $response->assertSessionHasErrors([
             'files.1' => $this->rulesMessages['files.*.mimes']
         ]);
