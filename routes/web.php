@@ -1,9 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\CustomerController;
-use App\Http\Controllers\PetController;
-use App\Http\Controllers\ActivityController;
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Application\ActivityController;
+use App\Http\Controllers\Application\CustomerController;
+use App\Http\Controllers\Application\PetController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,7 +23,7 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', [App\Http\Controllers\Application\HomeController::class, 'index'])->name('home');
 
 Route::get('/customers', [CustomerController::class, 'index'])->name('customer_index');
 Route::get('/customer/{id}/show', [CustomerController::class, 'show'])->name('customer_show');
@@ -31,7 +32,6 @@ Route::post('/customer/store', [CustomerController::class, 'store'])->name('cust
 Route::get('/customer/{id}/edit', [CustomerController::class, 'edit'])->name('customer_edit');
 Route::put('/customer/{id}/update', [CustomerController::class, 'update'])->name('customer_update');
 Route::delete('/customer/{id}/destroy', [CustomerController::class, 'destroy'])->name('customer_delete');
-
 
 Route::get('pets', [PetController::class, 'index'])->name('pet_index');
 Route::get('pet/{id}/show', [PetController::class, 'show'])->name('pet_show');
@@ -49,3 +49,5 @@ Route::get('activity/{id}/edit', [ActivityController::class, 'edit'])->name('act
 Route::put('activity/{id}/update', [ActivityController::class, 'update'])->name('activity_update');
 Route::delete('activity/{id}/destroy', [ActivityController::class, 'destroy'])->name('activity_delete');
 Route::delete('activity/destroyMedia/{id}', [ActivityController::class, 'destroyMedia'])->name('activity_delete_media');
+
+Route::get('/api/login', [AuthController::class, 'login'])->name('api_login');

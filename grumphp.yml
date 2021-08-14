@@ -15,3 +15,9 @@ grumphp:
             standard: PSR12
             triggered_by: [php]
             ignore_patterns: [./resources/*, ./database/*, ./bootstrap/*]
+        phpstan:
+            level: 5
+        phpunit:
+            always_execute: true
+        securitychecker:
+            run_always: true    

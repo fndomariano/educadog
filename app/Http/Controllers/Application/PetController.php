@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Application;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\PetRequest;
 use App\Models\Pet;
 use App\Models\Customer;
-use App\Http\Requests\PetRequest;
 use App\Repositories\PetRepository;
 use App\Services\PetService;
 use DB;

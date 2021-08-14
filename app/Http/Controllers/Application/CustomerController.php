@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Application;
 
-use App\Models\Customer;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\CustomerRequest;
+use App\Models\Customer;
 use App\Repositories\CustomerRepository;
 use App\Services\CustomerService;
 use DB;
