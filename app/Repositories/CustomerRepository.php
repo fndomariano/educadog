@@ -17,10 +17,19 @@ class CustomerRepository
     {
         return $this->customer
             ->query()
-            ->orWhere('name', 'LIKE', '%' . $term . '%')
+            ->where('name', 'LIKE', '%' . $term . '%')
             ->orWhere('email', 'LIKE', '%' . $term . '%')
             ->orWhere('phone', 'LIKE', '%' . $term . '%')
             ->paginate(10);
+    }
+
+    public function getActiveCustomerByEmail($email) 
+    {
+        return $this->customer
+            ->query()
+            ->where('active', '=', true)
+            ->where('email', '=', $email)
+            ->first();
     }
 
     public function getById($id)

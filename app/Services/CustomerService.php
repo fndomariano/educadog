@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Customer;
 use App\Http\Requests\CustomerRequest;
 use App\Repositories\CustomerRepository;
+use Illuminate\Support\Facades\Hash;
 
 class CustomerService
 {
@@ -61,5 +62,21 @@ class CustomerService
         $customer = $this->repository->getById($id);
 
         $customer->delete();
+    }
+
+    public function createPassword($email, $password)
+    {
+        $customer = $this->repository->getActiveCustomerByEmail($email);
+
+        if (!$customer) {
+            throw new \Exception('Não conseguimos encontrar. Verifique se o e-mail fornecido está correto!', 404);
+        }
+            
+        if ($customer->password != null && $customer->password != "") {
+            throw new \Exception('Você já possui uma senha cadastrada!', 419);
+        }
+
+        $customer->password = Hash::make($password);
+        $customer->save();
     }
 }

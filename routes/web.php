@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Application\ActivityController;
 use App\Http\Controllers\Application\CustomerController;
 use App\Http\Controllers\Application\PetController;
@@ -49,5 +48,3 @@ Route::get('activity/{id}/edit', [ActivityController::class, 'edit'])->name('act
 Route::put('activity/{id}/update', [ActivityController::class, 'update'])->name('activity_update');
 Route::delete('activity/{id}/destroy', [ActivityController::class, 'destroy'])->name('activity_delete');
 Route::delete('activity/destroyMedia/{id}', [ActivityController::class, 'destroyMedia'])->name('activity_delete_media');
-
-Route::get('/api/login', [AuthController::class, 'login'])->name('api_login');

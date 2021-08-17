@@ -13,4 +13,11 @@ class AuthController extends Controller
             'status' => 'Here we go again!'
         ]);
     }
+
+    public function logout()
+    {
+        return response()->json([
+            'status' => 'bye!'
+        ]);
+    }
 }

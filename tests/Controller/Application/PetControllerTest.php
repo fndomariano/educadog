@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Controller;
+namespace Tests\Controller\Application;
 
 use App\Models\User;
 use App\Models\Pet;

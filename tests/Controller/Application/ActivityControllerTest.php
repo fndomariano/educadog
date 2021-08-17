@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Controller;
+namespace Tests\Controller\Application;
 
 use App\Models\Activity;
 use App\Models\Customer;
@@ -38,7 +38,6 @@ class ActivityControllerTest extends TestCase
      */
     public function testListActivities(): void
     {
-
         $this
             ->actingAs(User::factory()->create())
             ->get('/activities')
