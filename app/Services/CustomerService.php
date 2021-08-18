@@ -79,4 +79,23 @@ class CustomerService
         $customer->password = Hash::make($password);
         $customer->save();
     }
+
+    public function authenticate($email, $password)
+    {
+        $customer = $this->repository->getActiveCustomerByEmail($email);
+
+        if (!$customer->active) {
+            throw new \Exception('O seu perfil foi inativado!', 401);
+        }
+        
+        if (!$customer || !Hash::check($password, $customer->password)) {
+            throw new \Exception('E-mail ou senha inválidos', 400);
+        }
+
+        if (!$token = auth('api')->attempt(['email' => $email, 'password'=> $password])) {            
+            throw new \Exception('Acesso não autorizado!', 401);
+        }
+        
+        return $token;
+    }
 }

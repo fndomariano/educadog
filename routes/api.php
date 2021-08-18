@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\PasswordController;
+use App\Http\Controllers\Api\PetController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,6 +17,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/login', [AuthController::class, 'login'])->name('api_login');
+Route::post('/login', [AuthController::class, 'login'])->name('api_login');
+
 Route::post('/password/create', [PasswordController::class, 'create'])->name('api_password_create');
 
+Route::group(['middleware' => ['apiJwt']], function() {
+    Route::get('/my-pets', [PetController::class, 'myPets'])->name('api_my_pets');
+});

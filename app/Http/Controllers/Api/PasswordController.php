@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Repositories\CustomerRepository;
 use App\Http\Requests\PasswordRequest;
 use App\Services\CustomerService;
 use Illuminate\Http\Request;

@@ -17,7 +17,6 @@ class PetController extends Controller
 
     private PetRepository $repository;
 
-
     public function __construct(PetService $service, PetRepository $repository)
     {
         $this->middleware('auth');

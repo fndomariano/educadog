@@ -21,6 +21,14 @@ class PetRepository
             ->paginate(10);
     }
 
+    public function getAllByCustomer($customerId)
+    {
+        return $this->pet
+            ->query()
+            ->where('customer_id', '=', $customerId)
+            ->get();
+    }
+
     public function getById($id)
     {
         return $this->pet->findOrFail($id);
