@@ -19,7 +19,9 @@ class PasswordController extends Controller
     public function create(PasswordRequest $request)
     {
         try {
-            $this->service->createPassword($request->email, $request->password);
+            $data = $request->only(['email', 'password']);
+
+            $this->service->createPassword($data);
 
             return response()->json([
                 'success' => true,

@@ -34,7 +34,12 @@ f) You can populate the database with Seeders
 root@docker_php:/app$ php artisan db:seed
 ```
 
-g) Access 
+g) Generate JWT
+```bash
+root@docker_php:/app$ php artisan jwt:secret
+```
+
+i) Access 
 ```
 http://localhost:8000
 ```

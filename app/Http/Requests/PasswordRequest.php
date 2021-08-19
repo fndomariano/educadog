@@ -14,8 +14,8 @@ class PasswordRequest extends FormRequest
     public function rules()
     {
         return [
-            'email'    => 'required|email',
-            'password' => 'required|min:8'
+            'email'    => 'required',
+            'password' => 'required'
         ];
     }
 
@@ -23,9 +23,7 @@ class PasswordRequest extends FormRequest
     {
         return [
             'email.required'    => 'Você precisa informar o e-mail',
-            'email.email'       => 'Você precisa informar um e-mail válido',
-            'password.required' => 'Você precisa informar uma senha',
-            'password.min'      => 'A sua senha precisa ter no mínimo 8 dígitos'
+            'password.required' => 'Você precisa informar uma senha'
         ];
     }
 }

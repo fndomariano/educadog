@@ -23,11 +23,10 @@ class CustomerRepository
             ->paginate(10);
     }
 
-    public function getActiveCustomerByEmail($email) 
+    public function getCustomerByEmail($email)
     {
         return $this->customer
-            ->query()
-            ->where('active', '=', true)
+            ->query()            
             ->where('email', '=', $email)
             ->first();
     }

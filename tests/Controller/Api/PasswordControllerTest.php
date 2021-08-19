@@ -46,6 +46,23 @@ class PasswordControllerTest extends TestCase
      * Deve informar que o cliente não foi encontrado
      */
     public function testCustomerNotFound(): void
+    {        
+        $data = [
+            'email'    => 'fernando.mariano@test.com',
+            'password' => 'Test@2021'
+        ];
+
+        $this
+            ->withHeaders(['Accept' => 'application/json'])
+            ->post('/api/password/create', $data)
+            ->assertStatus(404)
+            ->assertJson(['success' => false]);
+    }
+
+    /**
+     * Deve informar que o cliente não está ativo
+     */
+    public function testCustomerNotActive(): void
     {
         $customer = Customer::factory()->create([
             'active' => false
@@ -59,7 +76,7 @@ class PasswordControllerTest extends TestCase
         $this
             ->withHeaders(['Accept' => 'application/json'])
             ->post('/api/password/create', $data)
-            ->assertStatus(404)
+            ->assertStatus(401)
             ->assertJson(['success' => false]);
     }
 
@@ -101,41 +118,4 @@ class PasswordControllerTest extends TestCase
                 ]
             ]);
     }
-
-    /**
-     * Deve efetuar a validação de e-mail válido
-     */
-    public function testCreatePasswordWithValidEmail(): void
-    {   
-        $data = ['email' => 'fernando.mar', 'password' => 'Test@123'];
-        
-        $this
-            ->withHeaders(['Accept' => 'application/json'])
-            ->post('api/password/create', $data)
-            ->assertStatus(422)
-            ->assertJson([
-                'errors' => [
-                    'email' => [$this->rulesMessages['email.email']]
-                ]
-            ]);
-    }
-
-    /**
-     * Deve efetuar a validação de senha com mínimo de caracteres
-     */
-    public function testCreatePasswordWithPasswordMinimumCaracteres(): void
-    {   
-        $data = ['email' => 'fernando.mar16@gmail.com', 'password' => 'Test'];
-        
-        $this
-            ->withHeaders(['Accept' => 'application/json'])
-            ->post('api/password/create', $data)
-            ->assertStatus(422)
-            ->assertJson([
-                'errors' => [
-                    'password' => [$this->rulesMessages['password.min']]
-                ]
-            ]);
-    }
-
 }

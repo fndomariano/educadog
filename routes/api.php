@@ -17,9 +17,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/login', [AuthController::class, 'login'])->name('api_login');
-
 Route::post('/password/create', [PasswordController::class, 'create'])->name('api_password_create');
+
+
+Route::post('/login', [AuthController::class, 'login'])->name('api_login');
+Route::post('/logout', [AuthController::class, 'logout'])->name('api_logout');
+
 
 Route::group(['middleware' => ['apiJwt']], function() {
     Route::get('/my-pets', [PetController::class, 'myPets'])->name('api_my_pets');

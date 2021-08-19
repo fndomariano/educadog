@@ -20,7 +20,9 @@ class AuthController extends Controller
     {   
         try {
             
-            $token = $this->service->authenticate($request->email, $request->password);
+            $data = $request->only(['email', 'password']);
+
+            $token = $this->service->authenticate($data);
 
             return $this->respondWithToken($token);
 
@@ -35,19 +37,32 @@ class AuthController extends Controller
         return $this->respondWithToken($token);
     }
 
-    public function logout()
-    {
-        return response()->json([
-            'status' => 'bye!'
-        ]);
+    public function logout(Request $request)
+    {   
+        try {
+            
+            $this->service->unauthenticate($request->bearerToken());
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Logout efetuado com sucesso!'
+            ], 200);
+            
+        }  catch (\Exception $e)  {
+            
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], $e->getCode());
+        }
     }
 
     private function respondWithToken($token)
     {
         return response()->json([
             'access_token' => $token,
-            'token_type'   => 'bearer',
+            'token_type'   => 'Bearer',
             'expires_in'   => auth('api')->factory()->getTTL() * 60
-        ]);
+        ], 200);
     }
 }

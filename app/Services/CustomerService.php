@@ -64,38 +64,54 @@ class CustomerService
         $customer->delete();
     }
 
-    public function createPassword($email, $password)
+    public function createPassword(array $data)
     {
-        $customer = $this->repository->getActiveCustomerByEmail($email);
-
-        if (!$customer) {
-            throw new \Exception('Não conseguimos encontrar. Verifique se o e-mail fornecido está correto!', 404);
-        }
+        $customer = $this->validateCustomer($data['email']);     
             
         if ($customer->password != null && $customer->password != "") {
             throw new \Exception('Você já possui uma senha cadastrada!', 419);
         }
 
-        $customer->password = Hash::make($password);
+        $customer->password = Hash::make($data['password']);
         $customer->save();
     }
 
-    public function authenticate($email, $password)
+    public function authenticate(array $data)
     {
-        $customer = $this->repository->getActiveCustomerByEmail($email);
-
-        if (!$customer->active) {
-            throw new \Exception('O seu perfil foi inativado!', 401);
-        }
+        $customer = $this->validateCustomer($data['email']);
         
-        if (!$customer || !Hash::check($password, $customer->password)) {
+        if (!$customer || !Hash::check($data['password'], $customer->password)) {
             throw new \Exception('E-mail ou senha inválidos', 400);
         }
-
-        if (!$token = auth('api')->attempt(['email' => $email, 'password'=> $password])) {            
+        
+        if (!$token = auth('api')->attempt($data)) {            
             throw new \Exception('Acesso não autorizado!', 401);
         }
         
         return $token;
+    }
+
+    public function unauthenticate($token)
+    {
+        if ($token == null || $token == "") {
+            throw new \Exception('Token precisa ser informado!', 400);
+        }
+
+        auth('api')->logout();        
+    }
+
+    private function validateCustomer($email) 
+    {
+        $customer = $this->repository->getCustomerByEmail($email);
+
+        if (!$customer) {
+            throw new \Exception('Conta não encontrada. Verifique se os dados fornecidos estão corretos!', 404);
+        }
+
+        if (!$customer->active) {
+            throw new \Exception('O seu perfil está inativo!', 401);
+        }
+
+        return $customer;
     }
 }
