@@ -2,7 +2,7 @@
 
 namespace Tests\Controller\Api;
 
-use App\Http\Requests\PasswordRequest;
+use App\Http\Requests\AuthRequest;
 use App\Models\Customer;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
@@ -15,7 +15,7 @@ class AuthControllerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->rulesMessages = (new PasswordRequest())->messages();
+        $this->rulesMessages = (new AuthRequest())->messages();
     }
 
     /**

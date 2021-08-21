@@ -22,6 +22,7 @@ Route::post('/password/create', [PasswordController::class, 'create'])->name('ap
 
 Route::post('/login', [AuthController::class, 'login'])->name('api_login');
 Route::post('/logout', [AuthController::class, 'logout'])->name('api_logout');
+Route::post('/refresh', [AuthController::class, 'logout'])->name('api_refresh');
 
 
 Route::group(['middleware' => ['apiJwt']], function() {

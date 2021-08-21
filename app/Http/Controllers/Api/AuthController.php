@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\PasswordRequest;
+use App\Http\Requests\AuthRequest;
 use App\Services\CustomerService;
 use Illuminate\Http\Request;
 
@@ -16,7 +16,7 @@ class AuthController extends Controller
         $this->service = $service;
     }
 
-    public function login(PasswordRequest $request)
+    public function login(AuthRequest $request)
     {   
         try {
             
@@ -55,6 +55,11 @@ class AuthController extends Controller
                 'message' => $e->getMessage()
             ], $e->getCode());
         }
+    }
+
+    public function refresh()
+    {
+        return $this->respondWithToken(auth('api')->refresh());
     }
 
     private function respondWithToken($token)

@@ -27,14 +27,12 @@ class PasswordControllerTest extends TestCase
             'password' => null
         ]);
 
-        $data = [
-            'email'    => $customer->email,
-            'password' => 'Test@123'
-        ];
-
         $this
             ->withHeaders(['Accept' => 'application/json'])
-            ->post('/api/password/create', $data)
+            ->post('/api/password/create', [
+                'email'    => $customer->email,
+                'password' => 'Test@123'
+            ])
             ->assertStatus(200)
             ->assertJson(['success' => true]);
 
@@ -47,14 +45,12 @@ class PasswordControllerTest extends TestCase
      */
     public function testCustomerNotFound(): void
     {        
-        $data = [
-            'email'    => 'fernando.mariano@test.com',
-            'password' => 'Test@2021'
-        ];
-
         $this
             ->withHeaders(['Accept' => 'application/json'])
-            ->post('/api/password/create', $data)
+            ->post('/api/password/create', [
+                'email'    => 'fernando.mariano@test.com',
+                'password' => 'Test@2021'
+            ])
             ->assertStatus(404)
             ->assertJson(['success' => false]);
     }
@@ -68,14 +64,12 @@ class PasswordControllerTest extends TestCase
             'active' => false
         ]);
 
-        $data = [
-            'email'    => $customer->email,
-            'password' => 'Test@2021'
-        ];
-
         $this
             ->withHeaders(['Accept' => 'application/json'])
-            ->post('/api/password/create', $data)
+            ->post('/api/password/create', [
+                'email'    => $customer->email,
+                'password' => 'Test@2021'
+            ])
             ->assertStatus(401)
             ->assertJson(['success' => false]);
     }
@@ -87,17 +81,15 @@ class PasswordControllerTest extends TestCase
     {
         $customer = Customer::factory()->create([
             'active' => true,
-            'password' => 'Test@123'
+            'password' => 'Test@1234'
         ]);
-
-        $data = [
-            'email'    => $customer->email,
-            'password' => 'Test@2021'
-        ];
 
         $this
             ->withHeaders(['Accept' => 'application/json'])
-            ->post('/api/password/create', $data)
+            ->post('/api/password/create', [
+                'email'    => $customer->email,
+                'password' => 'Test@2021'
+            ])
             ->assertStatus(419)
             ->assertJson(['success' => false]);
     }
@@ -115,6 +107,49 @@ class PasswordControllerTest extends TestCase
                 'errors' => [
                     'email' => [$this->rulesMessages['email.required']],
                     'password' => [$this->rulesMessages['password.required']]
+                ]
+            ]);
+    }
+
+    /**
+     * Deve efetuar a validação de e-mail válido
+     */
+    public function testCreatePasswordWithInvalidEmail(): void
+    {        
+        $this
+            ->withHeaders(['Accept' => 'application/json'])
+            ->post('api/password/create', [
+                'email'    => 'fernando.mariano',
+                'password' => 'Test@1234'
+            ])
+            ->assertStatus(422)
+            ->assertJson([
+                'errors' => [
+                    'email' => [$this->rulesMessages['email.email']],                    
+                ]
+            ]);
+    }
+
+    /**
+     * Deve efetuar a validação de quantidade minima de caracteres da senha
+     */
+    public function testCreatePasswordWithoutMininumCaracteres(): void
+    {   
+        $customer = Customer::factory()->create([
+            'active' => true,
+            'password' => null
+        ]);
+
+        $this
+            ->withHeaders(['Accept' => 'application/json'])
+            ->post('api/password/create', [
+                'email'    => $customer->email,
+                'password' => 'Test123'
+            ])
+            ->assertStatus(422)
+            ->assertJson([
+                'errors' => [
+                    'password' => [$this->rulesMessages['password.min']],                    
                 ]
             ]);
     }

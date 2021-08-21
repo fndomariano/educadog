@@ -21,12 +21,21 @@ class PetRepository
             ->paginate(10);
     }
 
-    public function getAllByCustomer($customerId)
+    public function getMyPets($customerId)
     {
-        return $this->pet
+        $myPets = $this->pet
             ->query()
+            ->select(['id', 'name', 'breed', 'active'])
             ->where('customer_id', '=', $customerId)
             ->get();
+
+        foreach ($myPets as $pet) {
+            $media = $pet->getFirstMedia(\App\Services\PetService::MEDIA_COLLECTION);
+            $pet['photo'] = $media == null ? null : $media->getUrl();
+            unset($pet['media']);
+        }
+
+        return $myPets;
     }
 
     public function getById($id)

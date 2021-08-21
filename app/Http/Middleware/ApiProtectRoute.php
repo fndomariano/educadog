@@ -27,14 +27,14 @@ class ApiProtectRoute extends BaseMiddleware
         } catch (\Exception $exception) {
 
             if ($exception instanceof TokenInvalidException) {
-                return response()->json(['status' => 'O token é inválido']);
+                return response()->json(['status' => 'O token é inválido'], 400);
             } 
             
             if ($exception instanceof TokenExpiredException) {
-                return response()->json(['status' => 'O token expirou']);
+                return response()->json(['status' => 'O token expirou'], 403);
             } 
             
-            return response()->json(['status' => 'O token não foi encontrado']);
+            return response()->json(['status' => 'O token não foi encontrado'], 404);
         }
         
         return $next($request);

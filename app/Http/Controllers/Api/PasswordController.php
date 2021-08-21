@@ -20,7 +20,7 @@ class PasswordController extends Controller
     {
         try {
             $data = $request->only(['email', 'password']);
-
+            
             $this->service->createPassword($data);
 
             return response()->json([

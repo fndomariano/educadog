@@ -18,8 +18,8 @@ class PetController extends Controller
     {
         $customer = auth('api')->user();
         
-        $pets = $this->repository->getAllByCustomer($customer->id);
-        
-        return response()->json($pets);
+        $myPets = $this->repository->getMyPets($customer->id);
+                
+        return response()->json(['pets' => $myPets]);
     }
 }

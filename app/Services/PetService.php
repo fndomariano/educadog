@@ -8,7 +8,7 @@ use App\Repositories\PetRepository;
 
 class PetService
 {
-    private const MEDIA_COLLECTION = 'pets';
+    public const MEDIA_COLLECTION = 'pets';
 
     private $repository;
 
