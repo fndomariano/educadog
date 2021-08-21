@@ -38,7 +38,7 @@ class PetControllerTest extends TestCase
             ->assertStatus(200)
             ->assertJsonCount(5, 'pets')
             ->assertJsonStructure([
-                'pets' => [['id', 'name', 'breed', 'active']]
+                'pets' => [['id', 'name', 'breed', 'active', 'photo']]
             ]);
     }
 
