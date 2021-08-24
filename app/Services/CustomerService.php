@@ -93,11 +93,23 @@ class CustomerService
 
     public function unauthenticate($token)
     {
+        $this->validateToken($token);
+
+        auth('api')->logout();        
+    }
+
+    public function refreshToken($token)
+    {
+        $this->validateToken($token);
+
+        return auth('api')->refresh();
+    }
+
+    public function validateToken($token) 
+    {
         if ($token == null || $token == "") {
             throw new \Exception('Token precisa ser informado!', 400);
         }
-
-        auth('api')->logout();        
     }
 
     private function validateCustomer($email) 

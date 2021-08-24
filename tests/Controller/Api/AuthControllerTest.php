@@ -19,7 +19,7 @@ class AuthControllerTest extends TestCase
     }
 
     /**
-     * Deve efetuar obter o token de login de um cliente
+     * Deve obter o token de login de um cliente
      */
     public function testLogin(): void
     {
@@ -41,7 +41,7 @@ class AuthControllerTest extends TestCase
     }
 
     /**
-     * Deve efetuar obter o token de login de um cliente
+     * Deve efetuar logout de um cliente
      */
     public function testLogout(): void
     {
@@ -68,7 +68,40 @@ class AuthControllerTest extends TestCase
                 'Authorization' => sprintf('%s %s', $response['token_type'], $response['access_token'])
             ])
             ->post('/api/logout')
-            ->assertStatus(200);              
+            ->assertStatus(200)
+            ->assertJson(['success' => true]);              
+    }
+
+    /**
+     * Deve atualizar o token de login de um cliente
+     */
+    public function testRefreshToken(): void
+    {
+        $password = 'Test@1234';
+
+        $customer = Customer::factory()->create([
+            'active' => true,
+            'password' => Hash::make($password)
+        ]);
+
+        $response = $this
+            ->withHeaders(['Accept' => 'application/json'])
+            ->post('/api/login', [
+                'email'    => $customer->email,
+                'password' => $password
+            ])
+            ->getContent();
+        
+        $response = json_decode($response, true);
+        
+        $this
+            ->withHeaders([
+                'Accept' => 'application/json',
+                'Authorization' => sprintf('%s %s', $response['token_type'], $response['access_token'])
+            ])
+            ->post('/api/refresh')
+            ->assertStatus(200)                   
+            ->assertJsonStructure(['access_token', 'token_type', 'expires_in']);
     }
 
     /**
@@ -134,6 +167,18 @@ class AuthControllerTest extends TestCase
         $this
             ->withHeaders(['Accept' => 'application/json'])
             ->post('/api/logout')
+            ->assertStatus(400)
+            ->assertJson(['success' => false]);
+    }
+
+    /**
+     * Deve informar que o token não foi atualizado
+     */
+    public function testRefreshNullToken()
+    {
+        $this
+            ->withHeaders(['Accept' => 'application/json'])
+            ->post('/api/refresh')
             ->assertStatus(400)
             ->assertJson(['success' => false]);
     }

@@ -33,8 +33,6 @@ class AuthController extends Controller
                 'message' => $e->getMessage()
             ], $e->getCode());
         }
-        
-        return $this->respondWithToken($token);
     }
 
     public function logout(Request $request)
@@ -57,9 +55,21 @@ class AuthController extends Controller
         }
     }
 
-    public function refresh()
+    public function refresh(Request $request)
     {
-        return $this->respondWithToken(auth('api')->refresh());
+        try {
+            
+            $newToken = $this->service->refreshToken($request->bearerToken());
+
+            return $this->respondWithToken($newToken);
+            
+        }  catch (\Exception $e)  {
+            
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], $e->getCode());
+        }        
     }
 
     private function respondWithToken($token)
