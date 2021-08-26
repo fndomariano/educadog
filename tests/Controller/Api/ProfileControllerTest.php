@@ -4,17 +4,26 @@ namespace Tests\Controller\Api;
 
 use App\Http\Requests\PasswordRequest;
 use App\Models\Customer;
+use App\Models\Pet;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
-class PasswordControllerTest extends TestCase
+class ProfileControllerTest extends TestCase 
 {
     use RefreshDatabase;
+
+    const ENDPOINT_PROFILE_PASSWORD_CREATE = '/api/profile/password/create';
+    const ENDPOINT_PROFILE_PETS = '/api/profile/pets';
+
+    private $rulesMessages;
+    private $token;
 
     public function setUp(): void
     {
         parent::setUp();
         $this->rulesMessages = (new PasswordRequest())->messages();
+        $this->token = $this->getToken();
     }
 
     /**
@@ -28,8 +37,8 @@ class PasswordControllerTest extends TestCase
         ]);
 
         $this
-            ->withHeaders(['Accept' => 'application/json'])
-            ->post('/api/password/create', [
+            ->withHeaders(['Accept' => parent::APPLICATION_JSON])
+            ->post(self::ENDPOINT_PROFILE_PASSWORD_CREATE, [
                 'email'    => $customer->email,
                 'password' => 'Test@123'
             ])
@@ -46,10 +55,10 @@ class PasswordControllerTest extends TestCase
     public function testCustomerNotFound(): void
     {        
         $this
-            ->withHeaders(['Accept' => 'application/json'])
-            ->post('/api/password/create', [
+            ->withHeaders(['Accept' => parent::APPLICATION_JSON])
+            ->post(self::ENDPOINT_PROFILE_PASSWORD_CREATE, [
                 'email'    => 'fernando.mariano@test.com',
-                'password' => 'Test@2021'
+                'password' => 'Test@abc'
             ])
             ->assertStatus(404)
             ->assertJson(['success' => false]);
@@ -65,8 +74,8 @@ class PasswordControllerTest extends TestCase
         ]);
 
         $this
-            ->withHeaders(['Accept' => 'application/json'])
-            ->post('/api/password/create', [
+            ->withHeaders(['Accept' => parent::APPLICATION_JSON])
+            ->post(self::ENDPOINT_PROFILE_PASSWORD_CREATE, [
                 'email'    => $customer->email,
                 'password' => 'Test@2021'
             ])
@@ -85,8 +94,8 @@ class PasswordControllerTest extends TestCase
         ]);
 
         $this
-            ->withHeaders(['Accept' => 'application/json'])
-            ->post('/api/password/create', [
+            ->withHeaders(['Accept' => parent::APPLICATION_JSON])
+            ->post(self::ENDPOINT_PROFILE_PASSWORD_CREATE, [
                 'email'    => $customer->email,
                 'password' => 'Test@2021'
             ])
@@ -100,8 +109,8 @@ class PasswordControllerTest extends TestCase
     public function testCreatePasswordRequiredFields(): void
     {        
         $this
-            ->withHeaders(['Accept' => 'application/json'])
-            ->post('api/password/create', [])
+            ->withHeaders(['Accept' => parent::APPLICATION_JSON])
+            ->post(self::ENDPOINT_PROFILE_PASSWORD_CREATE, [])
             ->assertStatus(422)
             ->assertJson([
                 'errors' => [
@@ -117,8 +126,8 @@ class PasswordControllerTest extends TestCase
     public function testCreatePasswordWithInvalidEmail(): void
     {        
         $this
-            ->withHeaders(['Accept' => 'application/json'])
-            ->post('api/password/create', [
+            ->withHeaders(['Accept' => parent::APPLICATION_JSON])
+            ->post(self::ENDPOINT_PROFILE_PASSWORD_CREATE, [
                 'email'    => 'fernando.mariano',
                 'password' => 'Test@1234'
             ])
@@ -141,8 +150,8 @@ class PasswordControllerTest extends TestCase
         ]);
 
         $this
-            ->withHeaders(['Accept' => 'application/json'])
-            ->post('api/password/create', [
+            ->withHeaders(['Accept' => parent::APPLICATION_JSON])
+            ->post(self::ENDPOINT_PROFILE_PASSWORD_CREATE, [
                 'email'    => $customer->email,
                 'password' => 'Test123'
             ])
@@ -152,5 +161,66 @@ class PasswordControllerTest extends TestCase
                     'password' => [$this->rulesMessages['password.min']],                    
                 ]
             ]);
+    }
+
+    /**
+     * Deve retornar lista com pets de um cliente
+     */
+    public function testGetMyPets(): void
+    {
+        Pet::factory(5)->create(['customer_id' => 1]);
+                
+        $this
+            ->withHeaders([
+                'Accept' => parent::APPLICATION_JSON,
+                'Authorization' => $this->token
+            ])
+            ->get(self::ENDPOINT_PROFILE_PETS)
+            ->assertStatus(200)
+            ->assertJsonCount(5, 'pets')
+            ->assertJsonStructure([
+                'pets' => [['id', 'name', 'breed', 'active', 'photo']]
+            ]);
+    }
+
+    /**
+     * Deve retornar lista vazia de pets
+     */
+    public function testNotFoundMyPets(): void
+    {                        
+        $this
+            ->withHeaders([
+                'Accept' => parent::APPLICATION_JSON,
+                'Authorization' => $this->token
+            ])
+            ->get(self::ENDPOINT_PROFILE_PETS)
+            ->assertStatus(200)
+            ->assertJsonCount(0, 'pets')
+            ->assertJson([
+                'pets' =>  []
+            ]);
+    }
+
+
+    private function getToken() 
+    {
+        $password = 'Test@123';
+
+        $customer = Customer::factory()->create([
+            'active' => true,
+            'password' => Hash::make($password)
+        ]);
+
+        $response = $this
+            ->withHeaders(['Accept' => parent::APPLICATION_JSON])
+            ->post('/api/login', [
+                'email'    => $customer->email,
+                'password' => $password
+            ])
+            ->getContent();
+        
+        $response = json_decode($response, true);
+
+        return sprintf('%s %s', $response['token_type'], $response['access_token']);
     }
 }
