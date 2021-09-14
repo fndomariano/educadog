@@ -3,6 +3,7 @@
 namespace Tests\Controller\Api;
 
 use App\Http\Requests\PasswordRequest;
+use App\Models\Activity;
 use App\Models\Customer;
 use App\Models\Pet;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -198,6 +199,86 @@ class ProfileControllerTest extends TestCase
             ->assertJsonCount(0, 'pets')
             ->assertJson([
                 'pets' =>  []
+            ]);
+    }
+
+    /**
+     * Deve retornar lista de atividades dos pets filtrando por data
+     */
+    public function testGetMyPetActivities()
+    {
+        $pet = Pet::factory()->create(['customer_id' => 1]);
+        
+        foreach (['2021-07-01', '2021-08-01', '2021-08-02', '2021-08-31'] as $activity_date) {
+            Activity::factory()->create([
+                'pet_id'        => $pet->id,
+                'activity_date' => $activity_date
+            ]);
+        }
+        
+        $url = sprintf('%s/%s/activities?startDate=%s&endDate=%s', 
+            self::ENDPOINT_PROFILE_PETS, $pet->id, '2021-08-01', '2021-08-31');
+
+        $this
+            ->withHeaders([
+                'Accept' => parent::APPLICATION_JSON,
+                'Authorization' => $this->token
+            ])
+            ->get($url)
+            ->assertStatus(200)
+            ->assertJsonCount(3, 'activities')
+            ->assertJsonStructure([
+                'activities' =>  [['id', 'activity_date', 'score']]
+            ]);
+    }
+
+    /**
+     * Deve retornar lista de atividades dos pets sem informar parâmetros
+     */
+    public function testGetPetActivitiesWithoutParameters()
+    {
+        $pet = Pet::factory()->create(['customer_id' => 1]);
+
+        foreach (['Y-m-01', 'Y-m-d', 'Y-m-t', 'Y-07-31'] as $activity_date) {
+            Activity::factory()->create([
+                'pet_id'        => $pet->id,
+                'activity_date' => date($activity_date)
+            ]);
+        }
+        
+        $this
+            ->withHeaders([
+                'Accept' => parent::APPLICATION_JSON,
+                'Authorization' => $this->token
+            ])
+            ->get(sprintf('%s/%s/activities', self::ENDPOINT_PROFILE_PETS, $pet->id))
+            ->assertStatus(200)
+            ->assertJsonCount(3, 'activities')
+            ->assertJsonStructure([
+                'activities' =>  [['id', 'activity_date', 'score']]
+            ]);
+    }
+
+    /**
+     * Deve retornar uma atividade de um pet
+     */
+    public function testGetMyPetActivity()
+    {
+        $pet = Pet::factory()->create(['customer_id' => 1]);
+
+        $activity = Activity::factory()->create(['pet_id' => $pet->id]);
+
+        $url = sprintf('%s/activities/%s', self::ENDPOINT_PROFILE_PETS, $activity->id);
+
+        $this
+            ->withHeaders([
+                'Accept' => parent::APPLICATION_JSON,
+                'Authorization' => $this->token
+            ])
+            ->get($url)
+            ->assertStatus(200)
+            ->assertJsonStructure([
+                'activity' =>  ['id', 'activity_date', 'score', 'description', 'media']]
             ]);
     }
 

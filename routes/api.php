@@ -24,4 +24,5 @@ Route::post('/profile/password/create', [ProfileController::class, 'createPasswo
 Route::group(['middleware' => ['apiJwt']], function() {
     Route::get('/profile/pets', [ProfileController::class, 'pets'])->name('api_profile_pets');
     Route::get('/profile/pets/{id}/activities', [ProfileController::class, 'petsActivities'])->name('api_profile_pets_activities');
+    Route::get('/profile/pets/activities/{id}', [ProfileController::class, 'petActivity'])->name('api_profile_pet_activity');
 });

@@ -8,7 +8,7 @@ use App\Repositories\ActivityRepository;
 
 class ActivityService
 {
-    private const MEDIA_COLLECTION = 'activity';
+    public const MEDIA_COLLECTION = 'activity';
 
     private $repository;
 
