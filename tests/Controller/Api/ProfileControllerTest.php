@@ -6,8 +6,12 @@ use App\Http\Requests\PasswordRequest;
 use App\Models\Activity;
 use App\Models\Customer;
 use App\Models\Pet;
+use DB;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class ProfileControllerTest extends TestCase 
@@ -15,6 +19,8 @@ class ProfileControllerTest extends TestCase
     use RefreshDatabase;
 
     const ENDPOINT_PROFILE_PASSWORD_CREATE = '/api/profile/password/create';
+    const ENDPOINT_PROFILE_PASSWORD_FORGET = '/api/profile/password/forget';
+    const ENDPOINT_PROFILE_PASSWORD_RESET  = '/api/profile/password/reset';
     const ENDPOINT_PROFILE_PETS = '/api/profile/pets';
 
     private $rulesMessages;
@@ -206,7 +212,105 @@ class ProfileControllerTest extends TestCase
      */
     public function testSendEmailWithLinkToGenerateNewPassword(): void
     {
+        Mail::fake();
+
+        $customer = Customer::factory()->create([
+            'active' => true
+        ]);
+
+        $this
+            ->withHeaders(['Accept' => parent::APPLICATION_JSON])
+            ->post(self::ENDPOINT_PROFILE_PASSWORD_FORGET, [
+                'email' => $customer->email
+            ])
+            ->assertStatus(200)
+            ->assertJson(['success' => true]);
+
+        Mail::assertSent(\App\Mail\CustomerPasswordResetMail::class, 1);
+    }
+
+    /**
+     * Deve validar token e salvar a nova senha
+     */
+    public function testValidateTokenAndSaveNewPassword(): void
+    {
+        $customer = Customer::factory()->create([
+            'active' => true,
+            'password' => 'OldPassword'
+        ]);
+
+        $oldPassword = $customer->password;
+
+        $passwordToken = Str::random(64);
+        $newPassword   = 'newPassword';
+
+        DB::table('password_resets')->insert([
+            'email'      => $customer->email, 
+            'token'      => $passwordToken, 
+            'created_at' => Carbon::now()
+        ]);  
+
+        $this
+            ->withHeaders(['Accept' => parent::APPLICATION_JSON])
+            ->post(self::ENDPOINT_PROFILE_PASSWORD_RESET, [
+                'token'  => $passwordToken,
+                'password' => $newPassword,
+                'password_confirmation' => $newPassword
+            ])
+            ->assertRedirect(sprintf(self::ENDPOINT_PROFILE_PASSWORD_RESET . '/%s', $passwordToken));
         
+        $updatedCustomer = Customer::find($customer->id);
+        $this->assertNotEquals($updatedCustomer->password, $oldPassword);
+    }
+
+    /**
+     * Deve informar que um token está inválido para resetar a senha
+     */
+    public function testValidateInvalidToken(): void 
+    {
+        $passwordToken = Str::random(64);
+        $newPassword   = 'newPassword';
+
+        $response = $this
+            ->withHeaders(['Accept' => parent::APPLICATION_JSON])
+            ->post(self::ENDPOINT_PROFILE_PASSWORD_RESET, [
+                'token' => $passwordToken,
+                'password' => $newPassword,
+                'password_confirmation' => $newPassword
+            ])
+            ->assertRedirect(sprintf(self::ENDPOINT_PROFILE_PASSWORD_RESET . '/%s', $passwordToken));
+
+        $response->assertSessionHas(['error']);
+    }
+
+    /**
+     * Deve informar que um token expirou ao resetar a senha
+     */
+    public function testValidateExpirationToken(): void 
+    {
+        $customer = Customer::factory()->create([
+            'active' => true
+        ]);
+
+        $passwordToken = Str::random(64);
+        $newPassword   = 'newPassword';
+
+        DB::table('password_resets')->insert([
+            'email'      => $customer->email, 
+            'token'      => $passwordToken, 
+            'created_at' => Carbon::now()->subHours(2)
+        ]);  
+
+        $response = $this
+            ->withHeaders(['Accept' => parent::APPLICATION_JSON])
+            ->post(self::ENDPOINT_PROFILE_PASSWORD_RESET, [
+                'token' => $passwordToken,
+                'password' => $newPassword,
+                'password_confirmation' => $newPassword
+            ])
+            ->assertRedirect(sprintf(self::ENDPOINT_PROFILE_PASSWORD_RESET . '/%s', $passwordToken));
+
+        $response->assertSessionHas(['error']);
     }
 
     /**

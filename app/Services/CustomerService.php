@@ -158,12 +158,11 @@ class CustomerService
             throw new \Exception('Token inválido. Solicite um novo link para gerar a nova senha.');
         }
 
-        $now = new \DateTime('now');
-        $tokenCreatedAt = new \DateTime($tokenData->created_at);
-        $interval = $now->diff($tokenCreatedAt);
-        $hours = (int) $interval->format('%h');
+        $now = Carbon::now();
+        $tokenCreatedAt = new Carbon($tokenData->created_at);
+        $interval = (int) $now->diffInHours($tokenCreatedAt);
         
-        if ($hours > 1) {                
+        if ($interval > 1) {                
             throw new \Exception('O token expirou. Solicite um novo link para gerar a nova senha.');
         } 
         
