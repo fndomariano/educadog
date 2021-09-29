@@ -20,6 +20,13 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('api_logout');
 Route::post('/refresh', [AuthController::class, 'refresh'])->name('api_refresh');
 
 Route::post('/profile/password/create', [ProfileController::class, 'createPassword'])->name('api_profile_password_create');
+Route::post('/profile/password/forget', [ProfileController::class, 'resetPasswordLink'])->name('api_profile_password_reset_generate_link');
+
+
+Route::group(['middleware' => ['web']], function() {
+    Route::get('/profile/password/reset/{token}', [ProfileController::class, 'resetPasswordForm'])->name('api_profile_password_reset_form');
+    Route::post('/profile/password/reset', [ProfileController::class, 'resetPassword'])->name('api_profile_password_reset');
+});
 
 Route::group(['middleware' => ['apiJwt']], function() {
     Route::get('/profile/pets', [ProfileController::class, 'pets'])->name('api_profile_pets');

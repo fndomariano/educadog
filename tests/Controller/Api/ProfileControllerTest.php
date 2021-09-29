@@ -37,11 +37,14 @@ class ProfileControllerTest extends TestCase
             'password' => null
         ]);
 
+        $password = 'Test@123';
+
         $this
             ->withHeaders(['Accept' => parent::APPLICATION_JSON])
             ->post(self::ENDPOINT_PROFILE_PASSWORD_CREATE, [
-                'email'    => $customer->email,
-                'password' => 'Test@123'
+                'email'                 => $customer->email,
+                'password'              => $password,
+                'password_confirmation' => $password
             ])
             ->assertStatus(200)
             ->assertJson(['success' => true]);
@@ -55,11 +58,14 @@ class ProfileControllerTest extends TestCase
      */
     public function testCustomerNotFound(): void
     {        
+        $password = 'Test@abc';
+
         $this
             ->withHeaders(['Accept' => parent::APPLICATION_JSON])
             ->post(self::ENDPOINT_PROFILE_PASSWORD_CREATE, [
-                'email'    => 'fernando.mariano@test.com',
-                'password' => 'Test@abc'
+                'email'                 => 'fernando.mariano@test.com',
+                'password'              => $password,
+                'password_confirmation' => $password
             ])
             ->assertStatus(404)
             ->assertJson(['success' => false]);
@@ -74,11 +80,14 @@ class ProfileControllerTest extends TestCase
             'active' => false
         ]);
 
+        $password = 'Test@2021';
+
         $this
             ->withHeaders(['Accept' => parent::APPLICATION_JSON])
             ->post(self::ENDPOINT_PROFILE_PASSWORD_CREATE, [
-                'email'    => $customer->email,
-                'password' => 'Test@2021'
+                'email'                 => $customer->email,
+                'password'              => $password,
+                'password_confirmation' => $password
             ])
             ->assertStatus(401)
             ->assertJson(['success' => false]);
@@ -94,11 +103,14 @@ class ProfileControllerTest extends TestCase
             'password' => 'Test@1234'
         ]);
 
+        $password = 'Test@2021';
+
         $this
             ->withHeaders(['Accept' => parent::APPLICATION_JSON])
             ->post(self::ENDPOINT_PROFILE_PASSWORD_CREATE, [
-                'email'    => $customer->email,
-                'password' => 'Test@2021'
+                'email'                 => $customer->email,
+                'password'              => $password,
+                'password_confirmation' => $password
             ])
             ->assertStatus(419)
             ->assertJson(['success' => false]);
@@ -162,6 +174,39 @@ class ProfileControllerTest extends TestCase
                     'password' => [$this->rulesMessages['password.min']],                    
                 ]
             ]);
+    }
+
+    /**
+     * Deve efetuar a validação de confirmação de senha
+     */
+    public function testCreatePasswordConfirmation(): void
+    {   
+        $customer = Customer::factory()->create([
+            'active' => true,
+            'password' => null
+        ]);
+
+        $this
+            ->withHeaders(['Accept' => parent::APPLICATION_JSON])
+            ->post(self::ENDPOINT_PROFILE_PASSWORD_CREATE, [
+                'email'                 => $customer->email,
+                'password'              => 'Test1234',
+                'password_confirmation' => 'Test@123'
+            ])
+            ->assertStatus(422)
+            ->assertJson([
+                'errors' => [
+                    'password' => [$this->rulesMessages['password.confirmed']],
+                ]
+            ]);
+    }
+
+    /**
+     * Deve disparar um e-mail com um link para gerar uma nova senha
+     */
+    public function testSendEmailWithLinkToGenerateNewPassword(): void
+    {
+        
     }
 
     /**
@@ -278,7 +323,7 @@ class ProfileControllerTest extends TestCase
             ->get($url)
             ->assertStatus(200)
             ->assertJsonStructure([
-                'activity' =>  ['id', 'activity_date', 'score', 'description', 'media']]
+                'activity' =>  ['id', 'activity_date', 'score', 'description', 'media']
             ]);
     }
 

@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'title' => 'carolnabel',
+    'title' => 'EducaDog',
     'title_prefix' => '',
     'title_postfix' => '',
 

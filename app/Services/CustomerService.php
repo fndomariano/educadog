@@ -5,7 +5,11 @@ namespace App\Services;
 use App\Models\Customer;
 use App\Http\Requests\CustomerRequest;
 use App\Repositories\CustomerRepository;
+use DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 
 class CustomerService
 {
@@ -76,6 +80,38 @@ class CustomerService
         $customer->save();
     }
 
+    public function generatePasswordLink($email)
+    {
+        $customer = $this->validateCustomer($email);
+            
+        $token = Str::random(64);  
+        
+        $data = [
+            'resetPasswordLink' => route('api_profile_password_reset_form', $token),
+            'customerName'      => $customer->name 
+        ];
+
+        DB::table('password_resets')->insert([
+            'email'      => $email, 
+            'token'      => $token, 
+            'created_at' => Carbon::now()
+        ]);  
+
+        $mail = new \App\Mail\CustomerPasswordResetMail($data);
+
+        Mail::to($customer->email, env('APP_NAME'))->send($mail); 
+    }
+
+    public function updatePassword(array $data)
+    {
+        $resetPassword = $this->validatePasswordToken($data['token']);
+        
+        $customer = $this->validateCustomer($resetPassword->email);
+             
+        $customer->password = Hash::make($data['password']);
+        $customer->save();
+    }
+    
     public function authenticate(array $data)
     {
         $customer = $this->validateCustomer($data['email']);
@@ -93,23 +129,45 @@ class CustomerService
 
     public function unauthenticate($token)
     {
-        $this->validateToken($token);
+        $this->validateTokenJwt($token);
 
         auth('api')->logout();        
     }
 
     public function refreshToken($token)
     {
-        $this->validateToken($token);
+        $this->validateTokenJwt($token);
 
         return auth('api')->refresh();
     }
 
-    public function validateToken($token) 
+    private function validateTokenJwt($token) 
     {
         if ($token == null || $token == "") {
-            throw new \Exception('Token precisa ser informado!', 400);
+            throw new \Exception('Token precisa ser informado!');
         }
+    }
+
+    private function validatePasswordToken($token)
+    {
+        $tokenData = DB::table('password_resets')
+            ->where(['token' => $token])
+            ->first();                
+
+        if (!$tokenData) {
+            throw new \Exception('Token inválido. Solicite um novo link para gerar a nova senha.');
+        }
+
+        $now = new \DateTime('now');
+        $tokenCreatedAt = new \DateTime($tokenData->created_at);
+        $interval = $now->diff($tokenCreatedAt);
+        $hours = (int) $interval->format('%h');
+        
+        if ($hours > 1) {                
+            throw new \Exception('O token expirou. Solicite um novo link para gerar a nova senha.');
+        } 
+        
+        return $tokenData;
     }
 
     private function validateCustomer($email) 
