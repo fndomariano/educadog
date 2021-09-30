@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Customer;
 use App\Http\Requests\CustomerRequest;
+use App\Http\Requests\ProfileEditRequest;
 use App\Repositories\CustomerRepository;
 use DB;
 use Illuminate\Support\Facades\Hash;
@@ -58,6 +59,15 @@ class CustomerService
             $customer->addMedia($file)->toMediaCollection(self::MEDIA_COLLECTION);
         }
 
+        $customer->save();
+    }
+
+    public function updateProfile(ProfileEditRequest $request, $id) 
+    {
+        $customer = $this->repository->getById($id);
+        $customer->name  = $request->name;
+        $customer->email = $request->email;
+        $customer->phone = $request->phone;
         $customer->save();
     }
 

@@ -18,6 +18,7 @@ class ProfileControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    const ENDPOINT_PROFILE_EDIT = '/api/profile/%s/edit';
     const ENDPOINT_PROFILE_PASSWORD_CREATE = '/api/profile/password/create';
     const ENDPOINT_PROFILE_PASSWORD_FORGET = '/api/profile/password/forget';
     const ENDPOINT_PROFILE_PASSWORD_RESET  = '/api/profile/password/reset';
@@ -31,6 +32,35 @@ class ProfileControllerTest extends TestCase
         parent::setUp();
         $this->rulesMessages = (new PasswordRequest())->messages();
         $this->token = $this->getToken();
+    }
+
+    /**
+     * Deve alterar os dados de um cliente
+     */
+    public function testUpdateProfile(): void
+    {
+        $customer = Customer::factory()->create([
+            'active' => true
+        ]);
+
+        $data = [
+            'name'  => 'Fernando',
+            'email' => 'fernando@gmail.com',
+            'phone' => '34662372'
+        ];
+
+        $this
+            ->withHeaders([
+                'Accept' => parent::APPLICATION_JSON,
+                'Authorization' => $this->token
+            ])
+            ->post(sprintf(self::ENDPOINT_PROFILE_EDIT, $customer->id), $data)
+            ->assertStatus(200)            
+            ->assertJson([
+                'success' => true
+            ]);
+
+        $this->assertDatabaseHas('customer', $data);
     }
 
     /**

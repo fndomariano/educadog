@@ -29,6 +29,7 @@ Route::group(['middleware' => ['web']], function() {
 });
 
 Route::group(['middleware' => ['apiJwt']], function() {
+    Route::post('/profile/{id}/edit', [ProfileController::class, 'editProfile'])->name('api_profile_edit_profile');
     Route::get('/profile/pets', [ProfileController::class, 'pets'])->name('api_profile_pets');
     Route::get('/profile/pets/{id}/activities', [ProfileController::class, 'petsActivities'])->name('api_profile_pets_activities');
     Route::get('/profile/pets/activities/{id}', [ProfileController::class, 'petActivity'])->name('api_profile_pet_activity');

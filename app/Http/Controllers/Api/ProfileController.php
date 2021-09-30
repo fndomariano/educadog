@@ -8,6 +8,7 @@ use App\Models\Customer;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PasswordRequest;
 use App\Http\Requests\PasswordResetRequest;
+use App\Http\Requests\ProfileEditRequest;
 use App\Repositories\PetRepository;
 use App\Repositories\ActivityRepository;
 use App\Services\CustomerService;
@@ -25,6 +26,31 @@ class ProfileController extends Controller
         $this->customerService = $customerService;
         $this->petRepository = $petRepository;
         $this->activityRepository = $activityRepository;
+    }
+
+    public function editProfile(ProfileEditRequest $request, $id)
+    {
+        DB::beginTransaction();
+
+        try {
+
+            $this->customerService->updateProfile($request, $id);
+
+            DB::commit();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Dados dados salvos com sucesso!'
+            ], 200);
+
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], $e->getCode());
+        }
     }
 
     public function createPassword(PasswordRequest $request)
