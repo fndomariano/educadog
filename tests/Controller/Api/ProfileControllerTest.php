@@ -3,6 +3,7 @@
 namespace Tests\Controller\Api;
 
 use App\Http\Requests\PasswordRequest;
+use App\Http\Requests\ProfileEditRequest;
 use App\Models\Activity;
 use App\Models\Customer;
 use App\Models\Pet;
@@ -24,13 +25,15 @@ class ProfileControllerTest extends TestCase
     const ENDPOINT_PROFILE_PASSWORD_RESET  = '/api/profile/password/reset';
     const ENDPOINT_PROFILE_PETS = '/api/profile/pets';
 
-    private $rulesMessages;
+    private $passwordRequestMessages;
+    private $profileRequestMessages;
     private $token;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->rulesMessages = (new PasswordRequest())->messages();
+        $this->passwordRequestMessages = (new PasswordRequest())->messages();
+        $this->profileRequestMessages = (new ProfileEditRequest())->messages();
         $this->token = $this->getToken();
     }
 
@@ -61,6 +64,81 @@ class ProfileControllerTest extends TestCase
             ]);
 
         $this->assertDatabaseHas('customer', $data);
+    }
+
+    /**
+     * Deve efetuar a validação de campos obrigatórios do perfil
+     */
+    public function testEditProfileRequiredFields(): void
+    {        
+        $customer = Customer::factory()->create([
+            'active' => true
+        ]);
+
+        $this
+            ->withHeaders([
+                'Accept' => parent::APPLICATION_JSON,
+                'Authorization' => $this->token
+            ])
+            ->post(sprintf(self::ENDPOINT_PROFILE_EDIT, $customer->id), [])
+            ->assertStatus(422)
+            ->assertJson([
+                'errors' => [
+                    'name'  => [$this->profileRequestMessages['name.required']],
+                    'email' => [$this->profileRequestMessages['email.required']],
+                    'phone' => [$this->profileRequestMessages['phone.required']]
+                ]
+            ]);
+    }
+
+    /**
+     * Deve efetuar a validação de e-mail válido do perfil
+     */
+    public function testEditProfileValidEmail(): void
+    {        
+        $customer = Customer::factory()->create([
+            'active' => true
+        ]);
+
+        $this
+            ->withHeaders([
+                'Accept' => parent::APPLICATION_JSON,
+                'Authorization' => $this->token
+            ])
+            ->post(sprintf(self::ENDPOINT_PROFILE_EDIT, $customer->id), ['email' => 'test@.com'])
+            ->assertStatus(422)
+            ->assertJson([
+                'errors' => [
+                    'email' => [$this->profileRequestMessages['email.email']]
+                ]
+            ]);
+    }
+
+    /**
+     * Deve efetuar a validação de e-mail existente do perfil
+     */
+    public function testEditProfileUniqueEmail(): void
+    {   
+        $customer1 = Customer::factory()->create([
+            'active' => true
+        ]);
+
+        $customer2 = Customer::factory()->create([
+            'active' => true
+        ]);
+
+        $this
+            ->withHeaders([
+                'Accept' => parent::APPLICATION_JSON,
+                'Authorization' => $this->token
+            ])
+            ->post(sprintf(self::ENDPOINT_PROFILE_EDIT, $customer1->id), ['email' => $customer2->email])
+            ->assertStatus(422)
+            ->assertJson([
+                'errors' => [
+                    'email' => [$this->profileRequestMessages['email.unique']]
+                ]
+            ]);
     }
 
     /**
@@ -163,8 +241,8 @@ class ProfileControllerTest extends TestCase
             ->assertStatus(422)
             ->assertJson([
                 'errors' => [
-                    'email' => [$this->rulesMessages['email.required']],
-                    'password' => [$this->rulesMessages['password.required']]
+                    'email' => [$this->passwordRequestMessages['email.required']],
+                    'password' => [$this->passwordRequestMessages['password.required']]
                 ]
             ]);
     }
@@ -183,7 +261,7 @@ class ProfileControllerTest extends TestCase
             ->assertStatus(422)
             ->assertJson([
                 'errors' => [
-                    'email' => [$this->rulesMessages['email.email']],                    
+                    'email' => [$this->passwordRequestMessages['email.email']],                    
                 ]
             ]);
     }
@@ -207,7 +285,7 @@ class ProfileControllerTest extends TestCase
             ->assertStatus(422)
             ->assertJson([
                 'errors' => [
-                    'password' => [$this->rulesMessages['password.min']],                    
+                    'password' => [$this->passwordRequestMessages['password.min']],                    
                 ]
             ]);
     }
@@ -232,7 +310,7 @@ class ProfileControllerTest extends TestCase
             ->assertStatus(422)
             ->assertJson([
                 'errors' => [
-                    'password' => [$this->rulesMessages['password.confirmed']],
+                    'password' => [$this->passwordRequestMessages['password.confirmed']],
                 ]
             ]);
     }
